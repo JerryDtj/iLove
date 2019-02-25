@@ -4,4 +4,6 @@ import com.love.iLove.pojo.User;
 
 public interface UserService {
     User get(String userName);
+
+    boolean insert(User userEntity);
 }

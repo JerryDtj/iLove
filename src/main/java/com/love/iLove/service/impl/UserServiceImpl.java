@@ -11,13 +11,19 @@ import org.springframework.stereotype.Service;
 @Service("/userService")
 public class UserServiceImpl implements UserService {
     @Autowired
-    private UserMapper mapper;
+    private UserMapper userMapper;
 
     @Override
     public User get(String userName) {
         QueryWrapper<User> wrapper  = new QueryWrapper();
         wrapper.eq("username",userName);
-        User user = mapper.selectOne(wrapper);
+        User user = userMapper.selectOne(wrapper);
         return user;
+    }
+
+    @Override
+    public boolean insert(User userEntity) {
+        userMapper.insert(userEntity);
+        return true;
     }
 }

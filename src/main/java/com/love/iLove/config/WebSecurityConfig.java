@@ -1,11 +1,15 @@
 package com.love.iLove.config;
 
+import com.love.iLove.filter.qq.QQAuthenticationFilter;
+import com.love.iLove.filter.qq.QQAuthenticationManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -30,6 +34,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin().loginPage("/login").defaultSuccessUrl("/user")
                 .and()
                 .logout().logoutUrl("/logout").logoutSuccessUrl("/login");
+        // 在 UsernamePasswordAuthenticationFilter 前添加 QQAuthenticationFilter
+        http.addFilterAt(qqAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
     @Override
@@ -37,5 +43,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(anyUserDetailsService)
             .passwordEncoder(new BCryptPasswordEncoder())
         ;
+    }
+
+    /**
+     * 自定义 QQ登录 过滤器
+     */
+    private QQAuthenticationFilter qqAuthenticationFilter(){
+        QQAuthenticationFilter authenticationFilter = new QQAuthenticationFilter("/login/qq");
+        SimpleUrlAuthenticationSuccessHandler successHandler = new SimpleUrlAuthenticationSuccessHandler();
+        successHandler.setAlwaysUseDefaultTargetUrl(true);
+        successHandler.setDefaultTargetUrl("/user");
+        authenticationFilter.setAuthenticationManager(new QQAuthenticationManager());
+        authenticationFilter.setAuthenticationSuccessHandler(successHandler);
+        return authenticationFilter;
     }
 }
