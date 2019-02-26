@@ -1,0 +1,6 @@
+spring:
+  profiles: dev
+
+  datasource:
+    url: jdbc:mysql://tianzijiaozi.top:3306/ILove
+
