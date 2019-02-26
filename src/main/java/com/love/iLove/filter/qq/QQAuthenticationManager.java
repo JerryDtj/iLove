@@ -2,7 +2,7 @@ package com.love.iLove.filter.qq;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.love.iLove.domain.QQUser;
+import com.love.iLove.domain.User;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -40,14 +40,14 @@ public class QQAuthenticationManager implements AuthenticationManager {
     @Override
     public Authentication authenticate(Authentication auth) throws AuthenticationException {
         if (auth.getName() != null && auth.getCredentials() != null) {
-            QQUser user = getUserInfo(auth.getName(), (String) (auth.getCredentials()));
+            User user = getUserInfo(auth.getName(), (String) (auth.getCredentials()));
             return new UsernamePasswordAuthenticationToken(user,
                     null, AUTHORITIES);
         }
         throw new BadCredentialsException("Bad Credentials");
     }
 
-    private QQUser getUserInfo(String accessToken, String openId) {
+    private User getUserInfo(String accessToken, String openId) {
         String url = String.format(USER_INFO_API, userInfoUri, accessToken, clientId, openId);
         Document document;
         try {
@@ -58,7 +58,7 @@ public class QQAuthenticationManager implements AuthenticationManager {
         String resultText = document.text();
         JSONObject json = JSON.parseObject(resultText);
 
-        QQUser user = new QQUser();
+        User user = new User();
         user.setNickname(json.getString("nickname"));
         user.setGender(json.getString("gender"));
         user.setProvince(json.getString("province"));

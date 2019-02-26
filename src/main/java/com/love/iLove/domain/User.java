@@ -2,12 +2,12 @@ package com.love.iLove.domain;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 @Data
-@EntityScan
-public class QQUser {
+@TableName
+public class User {
 
     @TableId(type = IdType.AUTO)
     private String id;
@@ -16,7 +16,7 @@ public class QQUser {
 
     private String password;
 
-    private boolean enable=true;
+    private boolean enabled=true;
 
     private boolean accountNonLocked = false;
 
@@ -47,5 +47,5 @@ public class QQUser {
      */
     private String avatar;
 
-    private String roles;
+    private String roles = "ROLE_USER";
 }

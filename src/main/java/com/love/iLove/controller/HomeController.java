@@ -1,6 +1,6 @@
 package com.love.iLove.controller;
 
-import com.love.iLove.pojo.User;
+import com.love.iLove.domain.User;
 import com.love.iLove.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
