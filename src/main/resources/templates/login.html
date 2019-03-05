@@ -7,6 +7,32 @@
 </head>
 
 <body style="background-color: #f1f1f1; padding-bottom: 0">
+<script>
+    function toLogin(){
+        //以下为按钮点击事件的逻辑。注意这里要重新打开窗口
+        //否则后面跳转到QQ登录，授权页面时会直接缩小当前浏览器的窗口，而不是打开新窗口
+        window.open("https://graph.qq.com/oauth2.0/authorize?response_type=code&client_id=101555884&redirect_uri=https://tianzijiaozi.top/login/qq&state=test","TencentLogin",
+            "width=450,height=320,menubar=0,scrollbars=1,resizable=1,status=1,titlebar=0,toolbar=0,location=1");
+    }
+
+    function openWindow(url, width, height)
+    {
+        width = width || 600;
+        height = height || 400;
+        var left = (window.screen.width - width) / 2;
+        var top = (window.screen.height - height) / 2;
+        window.open(url, "_blank", "toolbar=yes, location=yes, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=no, copyhistory=yes, left="+left+", top="+top+", width="+width+", height="+height);
+    }
+
+    function qqLogin()
+    {
+        var qqAppId = '101555884'; // 上面申请得到的appid
+        var qqAuthPath = 'https://tianzijiaozi.top/login/qq'; // 前面设置的回调地址
+        var state = 'fjdslfjsdlkfd'; // 防止CSRF攻击的随机参数，必传，登录成功之后会回传，最好后台自己生成然后校验合法性
+        openWindow(`https://graph.qq.com/oauth2.0/authorize?response_type=token&client_id=${qqAppId}&redirect_uri=${encodeURIComponent(qqAuthPath)}&state=${state}`);
+    }
+</script>
+
 
 <div th:insert="~{header :: nav}"></div>
 
@@ -43,7 +69,8 @@
                         <div class="form-group">
                             <div class="input-group col-md-6 col-md-offset-3 col-xs-12 ">
                                 <button type="submit" class="btn btn-primary btn-block">登录</button>
-                                <a href="https://graph.qq.com/oauth2.0/authorize?response_type=code&client_id=101549021&redirect_uri=https://tianzijiaozi.top/qq&state=test" target="view_window" class="btn btn-primary btn-block">QQ登录</a>
+                                <a href="#" onclick='qqLogin()'><img src="png/qq_login.png"></a>
+
                             </div>
                         </div>
                         <div class="form-group">

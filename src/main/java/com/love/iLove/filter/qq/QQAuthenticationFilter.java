@@ -38,7 +38,7 @@ public class QQAuthenticationFilter extends AbstractAuthenticationProcessingFilt
     /**
      * client_secret 由腾讯提供
      */
-    private final static String clientSecret = "2a0f820407df400b84a854d054be8b6a";
+    private final static String clientSecret = "f971d329363d602c0b24e08230c7756d";
 
     /**
      * redirect_uri 腾讯回调地址
