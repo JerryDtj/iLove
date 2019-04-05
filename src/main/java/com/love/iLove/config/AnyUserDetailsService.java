@@ -56,7 +56,7 @@ public class AnyUserDetailsService implements UserDetailsService {
             messageText.setSendType(MessageTextSendTypeEnum.CONSUMER.CONSUMER);
             List<MessageText> text = messageTextService.find(messageText);
 
-            if (text==null){//没有消息，创建消息主体和消息发送对象
+            if (text.size()==0){//没有消息，创建消息主体和消息发送对象
                 messageText.setTitle("系统提示");
                 messageText.setContent("请尽快补充完成用户信息");
                 messageText.setCreateAt(new Date());
@@ -76,7 +76,7 @@ public class AnyUserDetailsService implements UserDetailsService {
                 int messageTextId = text.get(0).getId();
                 message.setMessageTextId(messageTextId);
                 List<Message> messageList = messageService.find(message);
-                if (messageList==null){
+                if (messageList.size()==0){
                     //消息为空，创建消息发送对象
                     message = new Message(user.getId(),MessageStatusEnum.UNREADER,new Date(),messageTextId);
                     int messageId = messageService.add(message);
