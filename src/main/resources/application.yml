@@ -3,8 +3,11 @@ server:
 spring:
   profiles:
     active: sc
+  # thymeleaf禁用缓存 页面修改实时生效
+  thymeleaf:
+    cache: false
 
-#jdbc
+  #jdbc
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
