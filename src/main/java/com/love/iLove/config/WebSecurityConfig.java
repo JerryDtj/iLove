@@ -2,6 +2,7 @@ package com.love.iLove.config;
 
 import com.love.iLove.filter.qq.QQAuthenticationFilter;
 import com.love.iLove.filter.qq.QQAuthenticationManager;
+import com.love.iLove.handler.LoginSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -17,6 +18,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private AnyUserDetailsService anyUserDetailsService;
 
+    @Autowired
+    private LoginSuccessHandler loginSuccessHandler;
+
     /**
      * 匹配 "/" 路径，不需要权限即可访问
      * 匹配 "/user" 及其以下所有路径，都需要 "USER" 权限
@@ -31,7 +35,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/").permitAll()
                 .antMatchers("/user/**").hasRole("USER")
                 .and()
-                .formLogin().loginPage("/login").defaultSuccessUrl("/user")
+                .formLogin().loginPage("/login")
+                .successHandler(loginSuccessHandler)//添加自定义登录成功处理页面
                 .and()
                 .logout().logoutUrl("/logout").logoutSuccessUrl("/login");
         // 在 UsernamePasswordAuthenticationFilter 前添加 QQAuthenticationFilter

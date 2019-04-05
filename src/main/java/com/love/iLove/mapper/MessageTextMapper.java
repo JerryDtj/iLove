@@ -1,11 +1,9 @@
 package com.love.iLove.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.love.iLove.domain.User;
-import org.apache.ibatis.annotations.Mapper;
+import com.love.iLove.domain.MessageText;
 import org.springframework.stereotype.Repository;
 
 @Repository
-@Mapper
-public interface UserMapper extends BaseMapper<User> {
+public interface MessageTextMapper extends BaseMapper<MessageText> {
 }

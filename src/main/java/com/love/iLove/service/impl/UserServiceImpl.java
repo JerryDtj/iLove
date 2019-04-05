@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-
+@SuppressWarnings("unchecked")
 @Service("/userService")
 public class UserServiceImpl implements UserService {
     @Autowired
@@ -27,9 +27,15 @@ public class UserServiceImpl implements UserService {
     public boolean insert(User userEntity) {
         User u = new User();
         BeanUtils.copyProperties(userEntity,u);
-        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        u.setPassword(bCryptPasswordEncoder.encode(u.getPassword()));
-        userMapper.insert(u);
-        return true;
+        QueryWrapper wrapper = new QueryWrapper();
+        wrapper.eq("username",u.getUsername());
+        if (userMapper.selectOne(wrapper)==null) {
+            BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+            u.setPassword(bCryptPasswordEncoder.encode(u.getPassword()));
+            userMapper.insert(u);
+            return true;
+        }else {
+            return false;
+        }
     }
 }
