@@ -6,6 +6,8 @@ spring:
   # thymeleaf禁用缓存 页面修改实时生效
   thymeleaf:
     cache: false
+    encoding: UTF-8
+    mode: HTML5
 
   #jdbc
   datasource:
