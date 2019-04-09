@@ -1,6 +1,7 @@
 package com.love.iLove.domain;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -10,11 +11,14 @@ import lombok.Data;
 public class User {
 
     @TableId(type = IdType.AUTO)
-    private int id;
+    private Integer id;
 
     private String username;
 
     private String password;
+
+    @TableField(exist = false)
+    private String oldPwd;
 
     private boolean enabled=true;
 
@@ -22,5 +26,5 @@ public class User {
 
     private boolean accountNonExpired = false;
 
-    private String roles = "ROLE_USER";
+    private String roles;
 }

@@ -1,75 +1,94 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <body>
-    <nav th:fragment="nav" class="navbar navbar-inverse navbar-fixed-top " role="navigation" style="margin: 0; border: 0; overflow:visible">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="/" >首页</a>
+    <div id="header" th:fragment="nav">
+        <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.css" rel="stylesheet">
+        <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+        <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <nav  class="navbar navbar-inverse navbar-fixed-top " role="navigation" style="margin: 0; border: 0; overflow:visible">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="/" >首页</a>
+                </div>
+                <div id="navbar" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav navbar-left">
+                        <li>
+                            <a href="https://github.com/JerryDtj" target="_blank">作者</a>
+                        </li>
+                        <li>
+                            <a href="https://app.tianzijiaozi.top" target="_blank">小网页</a>
+                        </li>
+                    </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li th:unless="${#httpServletRequest.remoteUser}">
+                            <a  th:href="@{/login}">登录</a>
+                        </li>
+                        <li id="user" th:if="${#httpServletRequest.remoteUser}">
+                            <ul class="nav navbar-nav">
+                                <li class="dropdown userDropdown">
+                                    <a href="#" data-toggle="dropdown">
+                                        <span class="glyphicon glyphicon-user"></span>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li class="dropdown-header">欢迎：<span th:text="${username}"></span>大大</li>
+                                        <li class="divider"></li>
+                                        <li><a href="#userinfo" data-toggle="tab">我的</a> </li>
+                                        <li><a href="#updatePwd" data-toggle="tab">修改密码</a></li>
+                                        <li><a href="#ios" data-toggle="tab">完善信息</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li th:if="${#httpServletRequest.remoteUser}">
+                            <ul class="nav navbar-nav">
+                                <li class="dropdown">
+                                    <a href="#"  data-toggle="dropdown">
+                                        <span class="glyphicon glyphicon-envelope"></span>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="#">未读消息</a></li>
+                                        <li><a href="#">已读消息</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li th:if="${#httpServletRequest.remoteUser}">
+                            <form id="logout" th:action="@{/logout}" method="post" style="display: none">
+                            </form>
+                            <a onclick="$('#logout').submit();">
+                                <span class="glyphicon glyphicon-off"></span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
-            <div id="navbar" class="navbar-collapse collapse">
-                <ul class="nav navbar-nav navbar-left">
-                    <li>
-                        <a href="https://github.com/JerryDtj" target="_blank">作者</a>
-                    </li>
-                    <li>
-                        <a href="https://app.tianzijiaozi.top" target="_blank">小网页</a>
-                    </li>
-                </ul>
-
-                <ul class="nav navbar-nav navbar-right">
-                    <li th:unless="${#httpServletRequest.remoteUser}">
-                        <a  th:href="@{/login}">登录</a>
-                    </li>
-                    <li th:if="${#httpServletRequest.remoteUser}">
-                        <ul class="nav navbar-nav">
-                            <li class="dropdown">
-                                <a href="#"  data-toggle="dropdown">
-                                    <span class="glyphicon glyphicon-user"></span>
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li class="dropdown-header">欢迎：<span th:text="${username}"></span>大大</li>
-                                    <li class="divider"></li>
-                                    <li><a href="#">修改密码</a></li>
-                                    <li><a href="#">完善信息</a></li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
-                    <li th:if="${#httpServletRequest.remoteUser}">
-                        <ul class="nav navbar-nav">
-                            <li class="dropdown">
-                                <a href="#"  data-toggle="dropdown">
-                                    <span class="glyphicon glyphicon-envelope"></span>
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="#">未读消息</a></li>
-                                    <li><a href="#">已读消息</a></li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
-                    <li th:if="${#httpServletRequest.remoteUser}">
-                        <form id="logout" th:action="@{/logout}" method="post" style="display: none">
-                        </form>
-                        <a onclick="$('#logout').submit();">
-                            <span class="glyphicon glyphicon-off"></span>
-                        </a>
-                    </li>
-                </ul>
-
-
-
-
-
-
-            </div>
-        </div>
-    </nav>
+        </nav>
+        <script th:inline="javascript">
+            $(function () {
+                $('#user a').click(function (e) {
+                    var location = window.location.href;
+                    console.info(location.indexOf("/user"));
+                    if (location.indexOf("/user")==-1){
+                        var curWwwPath = window.document.location.href;
+                        //获取主机地址之后的目录，如： /ems/Pages/Basic/Person.jsp
+                        var pathName = window.document.location.pathname;
+                        var pos = curWwwPath.indexOf(pathName);
+                        //获取主机地址，如： http://localhost:8080
+                        var localhostPath = curWwwPath.substring(0, pos);
+                        window.location.href=localhostPath+"/user";
+                    }else{
+                        console.info("当前就在用户界面");
+                    }
+                });
+            });
+        </script>
+    </div>
 </body>
 </html>

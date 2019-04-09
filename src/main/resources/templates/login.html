@@ -3,9 +3,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>登录</title>
-    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.css" rel="stylesheet">
-    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
-    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 
 <body style="background-color: #f1f1f1; padding-bottom: 0">
@@ -49,9 +46,9 @@
 </script>
 
 
-<div th:insert="~{header :: nav}"></div>
+<div th:replace="~{header :: nav}"></div>
 
-<div class="container" style="margin-top: 60px">
+<div class="container" id="container" style="margin-top: 60px">
 
     <div class="row" style="margin-top: 100px">
         <div class="col-md-6 col-md-offset-3">

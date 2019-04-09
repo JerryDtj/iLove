@@ -3,26 +3,99 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>登录</title>
-    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.css" rel="stylesheet">
-    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
-    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 
 <body style="background-color: #f1f1f1; padding-bottom: 0;margin-top: 60px;">
 
-<div th:insert="~{header :: nav}"></div>
+<div th:replace="~{header :: nav}"></div>
 
 <div class="container" style="margin-top: 60px">
 
-    <div style="text-align: center; margin-top: 10%">
-        <img src="http://upload.jianshu.io/users/upload_avatars/3424642/fb55f16faaf6.jpg?imageMogr2/auto-orient/strip|imageView2/1/w/240/h/240" alt="avatar" class="img-circle" style="margin: 0 auto">
-        <p th:text="${username}" style="margin-top: 25px; font-size: 20; color: crimson">Anoy</p>
-        <form th:action="@{/logout}" method="post">
-            <button class="btn btn-danger" style="margin-top: 20px">退出登录</button>
-        </form>
+    <div id="myTabContent" class="tab-content">
+        <div class="tab-pane fade in active" id="userinfo" style="text-align: center; margin-top: 10%">
+            <img src="http://upload.jianshu.io/users/upload_avatars/3424642/fb55f16faaf6.jpg?imageMogr2/auto-orient/strip|imageView2/1/w/240/h/240" alt="avatar" class="img-circle" style="margin: 0 auto">
+            <p th:text="${username}" style="margin-top: 25px; font-size: 20; color: crimson">Anoy</p>
+        </div>
+        <div class="tab-pane fade in" id="updatePwd">
+            <form th:action="@{/updatepwd}" method="post" class="form-horizontal" role="form">
+                <div class="form-group" style="display: none">
+                    <input id="id" type="hidden" name="id" th:value="${userId}"/>
+                    <input type="hidden" name="_method" th:value="put"/>
+                    <input id="username" type="hidden" th:value="${username}"/>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">原密码</label>
+                    <div class="col-sm-10">
+                        <input type="password" class="form-control" id="pwd" placeholder="请输入原密码">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">新密码</label>
+                    <div class="col-sm-10">
+                        <input type="password" class="form-control" id="newpwd" placeholder="请输入新密码">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">再次输入新密码</label>
+                    <div class="col-sm-10">
+                        <input type="password" class="form-control" id="aginpwd" name="password" placeholder="请再次输入新密码">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="button" onclick="changePwd()" class="btn btn-default">确认修改</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="tab-pane fade" id="ios">
+            <p>iOS 是一个由苹果公司开发和发布的手机操作系统。最初是于 2007 年首次发布 iPhone、iPod Touch 和 Apple
+                TV。iOS 派生自 OS X，它们共享 Darwin 基础。OS X 操作系统是用在苹果电脑上，iOS 是苹果的移动版本。</p>
+        </div>
+        <div class="tab-pane fade" id="jmeter">
+            <p>jMeter 是一款开源的测试软件。它是 100% 纯 Java 应用程序，用于负载和性能测试。</p>
+        </div>
+        <div class="tab-pane fade" id="ejb">
+            <p>Enterprise Java Beans（EJB）是一个创建高度可扩展性和强大企业级应用程序的开发架构，部署在兼容应用程序服务器（比如 JBOSS、Web Logic 等）的 J2EE 上。
+            </p>
+        </div>
     </div>
 
 </div>
+
+<script type="text/javascript" th:inline="javascript">
+    /*<![CDATA[*/
+    $(function () {
+        $(".userDropdown").mouseover(function () {
+            $(this).addClass("open");
+        });
+        $(".userDropdown").mouseleave(function(){
+            $(this).removeClass("open");
+        });
+
+    });
+    function check(){
+        return true;
+    }
+
+    function changePwd() {
+        if (check()==true){
+            // var param = {"_method":"put","id":$("#id").val(),"password":$("#newpwd").val(),"username":$("#id").val(),"oldPwd":$("#pwd").val()};
+            var param = {"id":[[${userId}]],"password":$("#newpwd").val(),"username":[[${username}]],"oldPwd":$("#pwd").val()};
+            $.ajax({
+                url:[[@{/updatepwd}]],
+                type:"put",
+                dataType:'json',
+                data:param,
+                success:function(result){
+                    console.info(result);
+
+                }
+            });
+        }
+    }
+    /*]]>*/
+</script>
 
 </body>
 

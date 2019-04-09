@@ -43,7 +43,9 @@ public class AnyUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userService.get(username);
+        User user = new User();
+        user.setUsername(username);
+        user = userService.get(user);
         if (user==null){
             throw new RuntimeException("user is null");
         }

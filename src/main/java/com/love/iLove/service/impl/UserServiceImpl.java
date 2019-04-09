@@ -16,11 +16,10 @@ public class UserServiceImpl implements UserService {
     private UserMapper userMapper;
 
     @Override
-    public User get(String userName) {
+    public User get(User user) {
         QueryWrapper<User> wrapper  = new QueryWrapper();
-        wrapper.eq("username",userName);
-        User user = userMapper.selectOne(wrapper);
-        return user;
+        wrapper.setEntity(user);
+        return userMapper.selectOne(wrapper);
     }
 
     @Override
@@ -37,5 +36,11 @@ public class UserServiceImpl implements UserService {
         }else {
             return false;
         }
+    }
+
+    @Override
+    public int update(User user) {
+        int count = userMapper.update(user,null);
+        return count;
     }
 }
