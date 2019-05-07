@@ -1,8 +1,10 @@
 package com.love.iLove.config;
 
+import com.love.iLove.filter.jwt.JWTAuthenticationFilter;
 import com.love.iLove.filter.qq.QQAuthenticationFilter;
 import com.love.iLove.filter.qq.QQAuthenticationManager;
 import com.love.iLove.handler.LoginSuccessHandler;
+import com.love.iLove.service.impl.AnyUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -32,15 +34,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/").permitAll()
+                .antMatchers("/","/login").permitAll()
+                .anyRequest().authenticated()
                 .antMatchers("/user/**").hasRole("USER")
                 .and()
+                .csrf().disable()
                 .formLogin().loginPage("/login")
                 .successHandler(loginSuccessHandler)//添加自定义登录成功处理页面
                 .and()
                 .logout().logoutUrl("/logout").logoutSuccessUrl("/login");
         // 在 UsernamePasswordAuthenticationFilter 前添加 QQAuthenticationFilter
-        http.addFilterAt(qqAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterAt(qqAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+            .addFilterBefore(new JWTAuthenticationFilter(authenticationManager()),UsernamePasswordAuthenticationFilter.class)
+        ;
     }
 
     @Override

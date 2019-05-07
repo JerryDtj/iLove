@@ -43,4 +43,9 @@ public class UserServiceImpl implements UserService {
         int count = userMapper.update(user,null);
         return count;
     }
+
+    @Override
+    public User getUserRoleByUserName(String userName) {
+        return userMapper.getUserRoleByUserName(userName);
+    }
 }

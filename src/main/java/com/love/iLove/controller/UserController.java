@@ -4,34 +4,34 @@ import com.alibaba.fastjson.JSON;
 import com.love.iLove.domain.User;
 import com.love.iLove.service.UserService;
 import com.love.iLove.utils.ServerResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-
-import java.security.Principal;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
+@Slf4j
 public class UserController {
     @Autowired
     UserService userService;
 
     @GetMapping("/user")
-    public String user(@AuthenticationPrincipal Principal principal, Model model){
-        User user = new User();
-        user.setUsername(principal.getName());
-        user = userService.get(user);
+    public String user(@AuthenticationPrincipal Authentication principal, Model model){
         model.addAttribute("username", principal.getName());
-        model.addAttribute("userId",user.getId());
+        model.addAttribute("userId",((User) principal.getPrincipal()).getId());
         return "user/user";
     }
 
     @PutMapping("/updatepwd")
     @ResponseBody
     public ServerResponse updatePwd(User user){
-        System.out.println(JSON.toJSONString(user));
+        log.debug("user:{}", JSON.toJSONString(user));
         User u = userService.get(user);
         if (u!=null){//用户名密码正确
             BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();

@@ -9,6 +9,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -77,6 +78,21 @@ public class QQAuthenticationFilter extends AbstractAuthenticationProcessingFilt
             }
         }
         return null;
+    }
+
+    /**
+     * 请求验证登录通过后，调用此方法，源码中调用successHandler，直接跳转到登录成功的url
+     * 在这里，先写成继续调用filter链
+     * @param request
+     * @param response
+     * @param chain
+     * @param authResult
+     * @throws IOException
+     * @throws ServletException
+     */
+    protected void successfulAuthentication(HttpServletRequest request,HttpServletResponse response, FilterChain chain, Authentication authResult)
+            throws IOException, ServletException {
+        chain.doFilter(request,response);
     }
 
     private QQToken getToken(String tokenAccessApi) throws IOException{

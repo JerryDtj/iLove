@@ -1,7 +1,5 @@
-package com.love.iLove.config;
+package com.love.iLove.service.impl;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.love.iLove.domain.Message;
 import com.love.iLove.domain.MessageText;
 import com.love.iLove.domain.User;
@@ -41,14 +39,28 @@ public class AnyUserDetailsService implements UserDetailsService {
     @Autowired
     private MessageTextService messageTextService;
 
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = new User();
-        user.setUsername(username);
-        user = userService.get(user);
+//        User user = new User();
+//        user.setUsername(username);
+//        user = userService.get(user);
+        User user =userService.getUserRoleByUserName(username);
         if (user==null){
             throw new RuntimeException("user is null");
         }
+
+//        //开始赋权
+//        if (user.getRoles().isEmpty()){
+//            throw new RuntimeException("no roles");
+//        }
+//        List<String> roles = user.getRoles();
+//        List<SimpleGrantedAuthority> simpleGrantedAuthorities = roles.stream().collect(() -> new ArrayList<SimpleGrantedAuthority>(),
+//                (list, role) -> list.add(new SimpleGrantedAuthority("ROLE_"+role)),
+//                (list1, list2) -> list1.addAll(list2)
+//        );
+
+
         //检测用户详情是否为null，为null，系统默认发一条消息给客户
         UserDetail userDetail = userDetailService.getDetilById(user.getId());
         if (userDetail==null){
@@ -96,13 +108,11 @@ public class AnyUserDetailsService implements UserDetailsService {
                     }
                 }
             }
-
-
-
         }
+        return user;
 
-        List<SimpleGrantedAuthority> list = this.getCrantedAuthority(user.getRoles());
-        return new org.springframework.security.core.userdetails.User(username,user.getPassword(),list);
+//        List<SimpleGrantedAuthority> list = this.getCrantedAuthority(user.getRoles());
+//        return new org.springframework.security.core.userdetails.User(username,user.getPassword(),user.getEnabled(),user.getAccountNonExpired(),user.getAccountNonExpired(),user.getAccountNonLocked(),simpleGrantedAuthorities);
     }
 
     private List<SimpleGrantedAuthority> getCrantedAuthority(String roles) {

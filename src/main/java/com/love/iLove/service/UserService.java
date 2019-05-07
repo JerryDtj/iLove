@@ -8,4 +8,6 @@ public interface UserService {
     boolean insert(User userEntity);
 
     int update(User user);
+
+    User getUserRoleByUserName(String userName);
 }

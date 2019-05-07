@@ -27,8 +27,8 @@
                     </ul>
 
                     <ul class="nav navbar-nav navbar-right">
-                        <li th:unless="${#httpServletRequest.remoteUser}">
-                            <a  th:href="@{/login}">登录</a>
+                        <li id="login" th:unless="${#httpServletRequest.remoteUser}">
+                            <a href="login.html">登录</a>
                         </li>
                         <li id="user" th:if="${#httpServletRequest.remoteUser}">
                             <ul class="nav navbar-nav">

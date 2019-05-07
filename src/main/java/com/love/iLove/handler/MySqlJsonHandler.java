@@ -1,9 +1,5 @@
 package com.love.iLove.handler;
 
-/**
- * @auther: Jerry
- * @Date: 2019-04-04 20:25
- */
 import com.alibaba.fastjson.JSONObject;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
@@ -13,7 +9,9 @@ import org.apache.ibatis.type.MappedTypes;
 import java.sql.*;
 
 /**
- * @description 用以mysql中json格式的字段，进行转换的自定义转换器，转换为实体类的JSONObject属性
+ * 用以mysql中json格式的字段，进行转换的自定义转换器，转换为实体类的JSONObject属性
+ * @auther: Jerry
+ * @Date: 2019-04-04 20:25
  */
 @MappedTypes(JSONObject.class)
 @MappedJdbcTypes(value = JdbcType.VARCHAR,includeNullJdbcType = true)

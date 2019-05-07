@@ -1,20 +1,19 @@
 package com.love.iLove;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.love.iLove.domain.Message;
 import com.love.iLove.domain.MessageText;
+import com.love.iLove.domain.User;
 import com.love.iLove.enums.MessageStatusEnum;
 import com.love.iLove.enums.MessageTextSendTypeEnum;
 import com.love.iLove.enums.MessageTypeEnum;
 import com.love.iLove.service.MessageService;
 import com.love.iLove.service.MessageTextService;
+import com.love.iLove.service.UserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.json.JsonbTester;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Date;
@@ -31,6 +30,8 @@ public class MyBatisPlusTests {
 	MessageService messageService;
 	@Autowired
 	MessageTextService messageTextService;
+	@Autowired
+	UserService userService;
 
 	@Test
 	public void jsonTest() {
@@ -65,6 +66,17 @@ public class MyBatisPlusTests {
 		messageText.setCreateAt(new Date());
 		messageText.setLink(ADD_USER_DETAIL_URL);
 		int count = messageTextService.add(messageText);
+	}
+
+	@Test
+	public void manyToManyTest(){
+		User user = userService.getUserRoleByUserName("2");
+		System.out.println(JSONObject.toJSONString(user));
+
+		User u = new User();
+		u.setUsername("2");
+		u = userService.get(u);
+		System.out.println("u:"+JSONObject.toJSONString(u));
 	}
 
 }
