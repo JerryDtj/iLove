@@ -3,7 +3,6 @@ server:
   jwt:
     timeout: 2
 
-
 spring:
   profiles:
     active: sc

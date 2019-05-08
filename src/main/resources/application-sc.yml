@@ -3,9 +3,9 @@ spring:
 
 #redis
 redis:
-  host: localhost
+  host: 127.0.0.1
 
 #jdbc
   datasource:
-    url: jdbc:mysql://localhost:3306/ILove?useUnicode=true&characterEncoding=utf8
+    url: jdbc:mysql://127.0.0.1:3306/ILove?useUnicode=true&characterEncoding=utf8
 
