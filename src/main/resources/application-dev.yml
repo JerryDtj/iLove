@@ -4,6 +4,9 @@ spring:
   datasource:
     url: jdbc:mysql://tianzijiaozi.top:3306/ILove?useUnicode=true&characterEncoding=utf8
 
+redis:
+  host: tianzijiaozi.top
+
 logging:
   level:
     com.love.iLove.handler: debug

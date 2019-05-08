@@ -1,6 +1,9 @@
 spring:
   profiles: sc
 
+redis:
+  host: localhost
+
 #jdbc
   datasource:
     url: jdbc:mysql://localhost:3306/ILove?useUnicode=true&characterEncoding=utf8
