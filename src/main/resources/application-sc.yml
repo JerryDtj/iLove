@@ -1,6 +1,7 @@
 spring:
   profiles: sc
 
+#redis
 redis:
   host: localhost
 

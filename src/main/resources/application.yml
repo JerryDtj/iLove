@@ -20,7 +20,7 @@ spring:
     username: root
     password: Dtj901213!
 
-  #redis url配置在dev和sc中
+  #redis
   redis:
     password: ilove
 

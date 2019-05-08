@@ -4,6 +4,7 @@ spring:
   datasource:
     url: jdbc:mysql://tianzijiaozi.top:3306/ILove?useUnicode=true&characterEncoding=utf8
 
+#redis
 redis:
   host: tianzijiaozi.top
 
