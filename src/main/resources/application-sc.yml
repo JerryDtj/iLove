@@ -1,11 +1,10 @@
 spring:
   profiles: sc
 
-#redis
-redis:
-  host: 127.0.0.1
-
 #jdbc
   datasource:
     url: jdbc:mysql://127.0.0.1:3306/ILove?useUnicode=true&characterEncoding=utf8
 
+#redis
+redis:
+  host: 127.0.0.1
