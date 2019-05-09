@@ -15,7 +15,6 @@ spring:
 
   #jdbc
   datasource:
-    url: jdbc:mysql://tianzijiaozi.top:3306/ILove?useUnicode=true&characterEncoding=utf8
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
     username: root
