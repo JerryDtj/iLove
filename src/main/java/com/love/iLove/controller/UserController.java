@@ -21,14 +21,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class UserController {
     @Autowired
     UserService userService;
-
+    @Autowired
     private UserRoleService userRoleService;
-    @Autowired
-    private UserDetailService userDetailService;
-    @Autowired
-    private MessageTextService messageTextService;
-    @Autowired
-    private MessageService messageService;
 
 
     @GetMapping("/user")
