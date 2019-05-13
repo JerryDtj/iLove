@@ -4,10 +4,13 @@ spring:
   datasource:
     url: jdbc:mysql://tianzijiaozi.top:3306/ILove?useUnicode=true&characterEncoding=utf8
 
-#redis
-redis:
-  host: tianzijiaozi.top
+  redis:
+    host: tianzijiaozi.top
 
 logging:
   level:
     com.love.iLove.handler: debug
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

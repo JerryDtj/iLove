@@ -18,4 +18,9 @@ public class Jump {
     public String register(){
         return "register";
     }
+
+    @GetMapping({"/", "/index", "/home"})
+    public String root(){
+        return "index";
+    }
 }

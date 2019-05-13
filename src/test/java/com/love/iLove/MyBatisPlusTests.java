@@ -9,6 +9,7 @@ import com.love.iLove.enums.MessageTextSendTypeEnum;
 import com.love.iLove.enums.MessageTypeEnum;
 import com.love.iLove.service.MessageService;
 import com.love.iLove.service.MessageTextService;
+import com.love.iLove.service.UserRoleService;
 import com.love.iLove.service.UserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,6 +33,8 @@ public class MyBatisPlusTests {
 	MessageTextService messageTextService;
 	@Autowired
 	UserService userService;
+	@Autowired
+	UserRoleService userRoleService;
 
 	@Test
 	public void jsonTest() {
@@ -77,6 +80,12 @@ public class MyBatisPlusTests {
 		u.setUsername("2");
 		u = userService.get(u);
 		System.out.println("u:"+JSONObject.toJSONString(u));
+	}
+
+	@Test
+	public void registTest(){
+
+		userRoleService.regist("3","123456");
 	}
 
 }

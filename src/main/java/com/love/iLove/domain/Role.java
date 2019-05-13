@@ -1,6 +1,7 @@
 package com.love.iLove.domain;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.love.iLove.enums.RoleStatus;
@@ -14,7 +15,8 @@ import lombok.Data;
 @TableName
 public class Role {
     @TableId(type = IdType.AUTO)
-    int id;
+    Integer id;
     String name;
+    @TableField("status")
     RoleStatus roleStatus;
 }

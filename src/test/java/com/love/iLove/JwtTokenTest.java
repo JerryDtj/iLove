@@ -1,6 +1,5 @@
 package com.love.iLove;
 
-import com.love.iLove.utils.JwtTokenUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,9 +15,9 @@ public class JwtTokenTest {
 
     @Test
     public void getToken(){
-        JwtTokenUtils jwtTokenUtils = new JwtTokenUtils();
-        String token = jwtTokenUtils.createToken(null);
+//        JwtTokenUtils jwtTokenUtils = new JwtTokenUtils();
+//        String token = jwtTokenUtils.createToken(null);
 //        jwtTokenUtils.VerifyToken(token);
-        System.out.println("token:"+token);
+//        System.out.println("token:"+token);
     }
 }
