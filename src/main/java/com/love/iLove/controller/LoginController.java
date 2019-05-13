@@ -18,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -55,7 +56,7 @@ public class LoginController {
 
     private SavedRequestAwareAuthenticationSuccessHandler savedRequestAwareAuthenticationSuccessHandler;
 
-    @RequestMapping("/qqLogin")
+    @GetMapping("/qqLogin")
     public String qqLogin(@RequestParam String code, RedirectAttributes redirectAttributes){
         String qqtoken = this.getQQToken(code);
         if (StringUtils.isNotBlank(qqtoken)){

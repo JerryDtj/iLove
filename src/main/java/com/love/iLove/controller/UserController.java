@@ -64,9 +64,4 @@ public class UserController {
         return "redirect:register?error";
     }
 
-    @PostMapping("/qq/login")
-    public void qqLogin(User user){
-
-    }
-
 }
