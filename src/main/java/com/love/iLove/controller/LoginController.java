@@ -6,9 +6,6 @@ import com.love.iLove.service.UserRoleService;
 import com.love.iLove.utils.JwtTokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -87,12 +84,6 @@ public class LoginController {
 
     public String getQQToken(String code){
         String url = "https://graph.qq.com/oauth2.0/token?grant_type=authorization_code&client_id=%s&client_secret=%s&code=%s&redirect_uri=%s";
-        try {
-           Document document = Jsoup.connect(String.format(url,APP_ID,APP_Key,code,redirect_uri)).get();
-           Element e = document.body();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         String result = this.sendGet(String.format(url,APP_ID,APP_Key,code,redirect_uri));
         //返回结果类似于access_token=9E25C5025CA320C9C2EFEEDB8B2221BC&expires_in=7776000&refresh_token=77DCA193CB84F2A210C6749C8991F117
         if (result.contains("access_token")){

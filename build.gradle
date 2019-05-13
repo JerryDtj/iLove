@@ -29,7 +29,6 @@ dependencies {
 	implementation 'mysql:mysql-connector-java'
 	implementation 'com.alibaba:druid:1.1.12'
 	implementation 'com.alibaba:fastjson:1.2.32'
-	implementation 'org.jsoup:jsoup:1.10.2'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 }
