@@ -11,6 +11,8 @@
 ## 项目介绍
 
 一个基于gradle的婚恋网站. 
+  - 下载运行需要先集成gradle
+  - gradle下载安装请参考官网 https://gradle.org/install/
 
 ## 技术栈
   - Spring Security
