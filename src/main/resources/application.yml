@@ -5,7 +5,7 @@ server:
 
 spring:
   profiles:
-    active: dev
+    active: sc
 
   # thymeleaf禁用缓存 页面修改实时生效
   thymeleaf:
