@@ -1,13 +1,15 @@
 package com.love.iLove.filter.qq;
 
-import com.alibaba.fastjson.JSON;
+import com.love.iLove.service.UserRoleService;
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -17,7 +19,10 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class QQAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
+@Slf4j
+public class QQAuthenticationFilter  implements ApplicationContextAware {
+
+    private static ApplicationContext applicationContext;
 
     private final static String CODE = "code";
 
@@ -57,24 +62,28 @@ public class QQAuthenticationFilter extends AbstractAuthenticationProcessingFilt
     private final static String TOKEN_ACCESS_API = "%s?grant_type=%s&client_id=%s&client_secret=%s&code=%s&redirect_uri=%s";
 
     public QQAuthenticationFilter(String defaultFilterProcessesUrl) {
-        super(new AntPathRequestMatcher(defaultFilterProcessesUrl, "GET"));
+//        super(new AntPathRequestMatcher(defaultFilterProcessesUrl, "GET"));
     }
 
-    @Override
+//    @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
         String code = request.getParameter(CODE);
-        System.out.println("Code : " + code);
+        log.debug("code:{}",code);
         String tokenAccessApi = String.format(TOKEN_ACCESS_API, accessTokenUri, grantType, clientId, clientSecret, code, redirectUri);
         QQToken qqToken = this.getToken(tokenAccessApi);
-        System.out.println(JSON.toJSONString(qqToken));
+        log.debug("qqToken:{}",qqToken);
+
         if (qqToken != null){
-            String openId = getOpenId(qqToken.getAccessToken());
-            System.out.println(openId);
-            if (openId != null){
+            String openId = getOpenId(qqToken.getAccessToken());//获取用户的openId
+            log.debug("openId:{}",openId);
+            //根据openId和默认密码创建一个用户
+            UserRoleService userRoleService = (UserRoleService) applicationContext.getBean("userRoleService");
+            Integer r = userRoleService.regist(openId,"123456");
+            if (r!=null&openId != null){
                 // 生成验证 authenticationToken
-                UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(qqToken.getAccessToken(), openId);
+                UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(qqToken.getAccessToken(), "123456");
                 // 返回验证结果
-                return this.getAuthenticationManager().authenticate(authRequest);
+//                return this.getAuthenticationManager().authenticate(authRequest);
             }
         }
         return null;
@@ -122,6 +131,12 @@ public class QQAuthenticationFilter extends AbstractAuthenticationProcessingFilt
         }
         return null;
     }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        QQAuthenticationFilter.applicationContext = applicationContext;
+    }
+
 
     class QQToken {
 
