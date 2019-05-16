@@ -10,4 +10,5 @@ public interface UserService {
     int update(User user);
 
     User getUserRoleByUserName(String userName);
+
 }

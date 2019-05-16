@@ -1,9 +1,6 @@
 package com.love.iLove.service.impl;
 
 import com.love.iLove.domain.User;
-import com.love.iLove.service.MessageService;
-import com.love.iLove.service.MessageTextService;
-import com.love.iLove.service.UserDetailService;
 import com.love.iLove.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -21,14 +18,6 @@ public class AnyUserDetailsService implements UserDetailsService {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private UserDetailService userDetailService;
-
-    @Autowired
-    private MessageService messageService;
-
-    @Autowired
-    private MessageTextService messageTextService;
 
 
     @Override
@@ -39,7 +28,7 @@ public class AnyUserDetailsService implements UserDetailsService {
         }
 
         //检测用户详情是否为null，为null，系统默认发一条消息给客户
-        /*UserDetail userDetail = userDetailService.getDetilById(user.getId());
+        /*Gender userDetail = userDetailService.getDetilById(user.getId());
         if (userDetail==null){
             MessageText messageText = new MessageText();
             messageText.setCreatorName("sysAdmin");

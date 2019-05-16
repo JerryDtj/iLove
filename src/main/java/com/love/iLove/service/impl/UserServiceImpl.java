@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.love.iLove.domain.User;
 import com.love.iLove.mapper.UserMapper;
 import com.love.iLove.service.UserService;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,17 +23,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Integer insert(User userEntity) {
-        User u = new User();
-        BeanUtils.copyProperties(userEntity,u);
         QueryWrapper wrapper = new QueryWrapper();
-        wrapper.eq("username",u.getUsername());
-        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        u.setPassword(bCryptPasswordEncoder.encode(u.getPassword()));
-        userMapper.insert(u);
-        return u.getId();
+        wrapper.eq("username",userEntity.getUsername());
+        User u = userMapper.selectOne(wrapper);
+        if (u==null){
+            BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+            userEntity.setPassword(bCryptPasswordEncoder.encode(userEntity.getPassword()));
+            userMapper.insert(userEntity);
+            return userEntity.getId();
+        }else {
+            return u.getId();
+        }
     }
-
-
 
     @Override
     public int update(User user) {

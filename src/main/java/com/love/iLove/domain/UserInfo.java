@@ -3,6 +3,7 @@ package com.love.iLove.domain;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.love.iLove.enums.Gender;
 import lombok.Data;
 
 import java.util.Date;
@@ -12,14 +13,14 @@ import java.util.Date;
  */
 @Data
 @TableName
-public class UserDetail {
+public class UserInfo {
     @TableId(type = IdType.AUTO)
-    int id;
+    Integer id;
     Integer userId;
     String email;
     Date createTime;
     String nickName;
-    Integer gender;
+    Gender genderEnum;
     String province;
     Date year;
     String avatar;
