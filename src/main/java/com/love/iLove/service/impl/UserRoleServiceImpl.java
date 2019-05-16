@@ -15,8 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.beans.Transient;
-
 /**
  * @auther: Jerry
  * @Date: 2019-05-10 05:49
@@ -37,6 +35,7 @@ public class UserRoleServiceImpl implements UserRoleService {
     public Integer regist(String username, String password){
        return this.registByRoleName(username,password,"USER");
     }
+
 
     private Integer registByRoleName(String username, String password,String roleName){
         User user = new User();
@@ -63,7 +62,7 @@ public class UserRoleServiceImpl implements UserRoleService {
         return null;
     }
 
-    @Transient
+    @Transactional
     public Integer qqregist(String username, String password, UserInfo userInfo){
         Integer userId = this.registByRoleName(username,password,"USERINFO");
 

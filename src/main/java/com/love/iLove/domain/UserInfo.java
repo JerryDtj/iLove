@@ -20,7 +20,7 @@ public class UserInfo {
     String email;
     Date createTime;
     String nickName;
-    Gender genderEnum;
+    Gender gender;
     String province;
     Date year;
     String avatar;

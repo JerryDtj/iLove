@@ -96,9 +96,9 @@ public class LoginController {
         System.out.println("json:"+jsonObject.toJSONString());
         if (jsonObject.getInteger("ret")==0){
             //成功登录
+            jsonObject.put("gender",EnumUtil.getEnumByValue(Gender.class,jsonObject.getString("gender")));
+            jsonObject.put("province",jsonObject.getString("province")+jsonObject.getString("city"));
             userInfo = jsonObject.toJavaObject(UserInfo.class);
-            userInfo.setGenderEnum(EnumUtil.getEnumByValue(Gender.class,jsonObject.getString("gender")));
-            userInfo.setProvince(jsonObject.getString("province")+jsonObject.getString("city"));
         }
 
         return userInfo;
