@@ -1,4 +1,4 @@
-package com.love.iLove.service.impl;
+package com.love.iLove.security.service;
 
 import com.love.iLove.domain.User;
 import com.love.iLove.service.UserService;
