@@ -1,9 +1,10 @@
 package com.love.iLove.security.config;
 
 import com.love.iLove.filter.jwt.JWTAuthenticationFilter;
+import com.love.iLove.security.handle.GoAccessDeniedHandler;
+import com.love.iLove.security.handle.GoAuthenticationEntryPoint;
 import com.love.iLove.handler.LoginSuccessHandler;
 import com.love.iLove.security.service.AnyUserDetailsService;
-import com.love.iLove.security.voter.MySecurityMetadataSource;
 import com.love.iLove.security.voter.RolePermissionVoter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -33,9 +34,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private LoginSuccessHandler loginSuccessHandler;
 
     @Autowired
-    private MySecurityMetadataSource mySecurityMetadataSource;
-
-    @Autowired
     private RolePermissionVoter rolePermissionVoter;
 
     /**
@@ -48,25 +46,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/","/register","/login/**").permitAll()
+                .antMatchers("/","/register","/login/**","/errorpage").permitAll()
                 .antMatchers("/user/**").hasAnyRole("USERDO","USER")
                 .anyRequest().authenticated()//所有请求都要被鉴权
-
-//                // 自定义FilterInvocationSecurityMetadataSource
-//                .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
-//                    @Override
-//                    public <O extends FilterSecurityInterceptor> O postProcess(O fsi) {
-//                        fsi.setSecurityMetadataSource(mySecurityMetadataSource);
-//                        return fsi;
-//                    }
-//                })
                 .and()
-                .csrf().disable()
+                .exceptionHandling()
+                .accessDeniedHandler(new GoAccessDeniedHandler())
+                .authenticationEntryPoint(new GoAuthenticationEntryPoint())
+                .and()
                 .formLogin().loginPage("/login")
                 .successHandler(loginSuccessHandler)//添加自定义登录成功处理页面
                 .and()
                 .logout().logoutUrl("/logout").logoutSuccessUrl("/login")
                 .and()
+                .csrf().disable()
 //                 自定义accessDecisionManager
                 .authorizeRequests().accessDecisionManager(accessDecisionManager())
 

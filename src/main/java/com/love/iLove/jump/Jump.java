@@ -23,4 +23,9 @@ public class Jump {
     public String root(){
         return "index";
     }
+
+    @GetMapping("/errorpage")
+    public String authInsuffciently(){
+        return "errorpage";
+    }
 }
