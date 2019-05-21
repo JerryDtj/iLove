@@ -71,6 +71,7 @@
             </div>
         </nav>
         <script th:inline="javascript">
+            var _hmt = _hmt || [];
             $(function () {
                 $('#user a').click(function (e) {
                     var location = window.location.href;
@@ -87,7 +88,13 @@
                         console.info("当前就在用户界面");
                     }
                 });
+                //百度统计
+                var hm = document.createElement("script");
+                hm.src = "https://hm.baidu.com/hm.js?8e5e4a27623d107a8850c6bbe859e1a4";
+                var s = document.getElementsByTagName("script")[0];
+                s.parentNode.insertBefore(hm, s);
             });
+
         </script>
     </div>
 </body>
