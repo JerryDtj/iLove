@@ -1,7 +1,5 @@
 server:
   port: 8080
-  jwt:
-    timeout: 2
 
 spring:
   profiles:
@@ -24,9 +22,6 @@ spring:
   redis:
     password: ilove
 
-
-
-
 mybatis-plus:
   type-handlers-package: com.love.iLove.handler
   configuration:
@@ -34,3 +29,12 @@ mybatis-plus:
     # 如果项目之中实体统一使用IEnum或注解的方式,可配置成 com.baomidou.mybatisplus.extension.handlers.EnumTypeHandler,也可省略上面的type-enums-package配置
     # 配置type-enums-package只对注解方式的枚举处理能提前加载缓存.
     default-enum-type-handler: org.apache.ibatis.type.EnumOrdinalTypeHandler
+  global-config:
+    banner: false
+
+jwt:
+  tokenHeader: Authorization #JWT存储的请求头
+  secret: mySecret #JWT加解密使用的密钥
+  expiration: 600 #JWT的超期限时间(60*60*24)
+  jwtHead: Bearer  #JWT负载中拿到开头
+  issUser: iLove #jwt 颁发者信息

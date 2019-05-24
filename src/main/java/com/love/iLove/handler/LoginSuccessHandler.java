@@ -5,6 +5,7 @@ import com.love.iLove.domain.User;
 import com.love.iLove.utils.JwtTokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
@@ -26,6 +27,12 @@ public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessH
 
     @Autowired
     private RedisTemplate redisTemplate;
+    @Autowired
+    private JwtTokenUtils jwtTokenUtils;
+    @Value("${jwt.expiration}")
+    private int expiration;
+    @Value("${jwt.tokenHeader}")
+    private String tokenHeader;
 
     /**
      * 登录成功处理器
@@ -39,12 +46,11 @@ public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessH
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
         log.debug("auth:{}",JSON.toJSONString(authentication));
         User user = (User) authentication.getPrincipal();
-        JwtTokenUtils jwtTokenUtils = new JwtTokenUtils();
 
         String token = jwtTokenUtils.createToken(user);
 
-        redisTemplate.boundValueOps("token_"+user.getUsername()).set(token,10, TimeUnit.SECONDS);
-        response.setHeader("Authorization", token);
+        redisTemplate.opsForValue().set("token_"+user.getUsername(),token,expiration, TimeUnit.SECONDS);
+        response.setHeader(tokenHeader, token);
 
         log.debug("token:{}",token);
         super.getRedirectStrategy().sendRedirect(request, response, "/user");//登录成功跳转页面

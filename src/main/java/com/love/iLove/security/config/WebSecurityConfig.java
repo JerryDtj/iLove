@@ -1,13 +1,14 @@
 package com.love.iLove.security.config;
 
 import com.love.iLove.filter.jwt.JWTAuthenticationFilter;
+import com.love.iLove.handler.LoginSuccessHandler;
 import com.love.iLove.security.handle.GoAccessDeniedHandler;
 import com.love.iLove.security.handle.GoAuthenticationEntryPoint;
-import com.love.iLove.handler.LoginSuccessHandler;
 import com.love.iLove.security.service.AnyUserDetailsService;
 import com.love.iLove.security.voter.RolePermissionVoter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.vote.AuthenticatedVoter;
@@ -68,8 +69,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
         // 在 UsernamePasswordAuthenticationFilter 前添加 JWTAuthenticationFilter
-            http.addFilterAt(new JWTAuthenticationFilter(authenticationManager()),UsernamePasswordAuthenticationFilter.class)
+            http.addFilterAt(jwtAuthenticationFilter(),UsernamePasswordAuthenticationFilter.class)
         ;
+    }
+
+    @Bean
+    public JWTAuthenticationFilter jwtAuthenticationFilter() {
+        return new JWTAuthenticationFilter();
     }
 
     @Override
@@ -89,5 +95,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 new AuthenticatedVoter());
         return new UnanimousBased(decisionVoters);
     }
+
 
 }
