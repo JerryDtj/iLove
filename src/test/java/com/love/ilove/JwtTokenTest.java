@@ -55,13 +55,13 @@ public class JwtTokenTest {
         String token = jwtTokenUtils.createToken(user);
         Assert.assertNotNull(token);
         log.info("token:{}",token);
-        redisTemplate.opsForValue().set("token_3",token,expiration, TimeUnit.SECONDS);
+        redisTemplate.opsForValue().set("token_"+user.getUsername(),token,expiration, TimeUnit.SECONDS);
     }
 
     @Test
     public void VerifyToken(){
-        JwtTokenUtils jwtTokenUtils = new JwtTokenUtils();
         String token = jwtTokenUtils.createToken(user);
+        redisTemplate.opsForValue().set("token_"+user.getUsername(),token,expiration, TimeUnit.SECONDS);
         Boolean result = jwtTokenUtils.verifyToken(token,user);
         Assert.assertTrue(result);
     }
