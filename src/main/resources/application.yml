@@ -23,7 +23,7 @@ spring:
     password: ilove
 
 mybatis-plus:
-  type-handlers-package: com.love.iLove.handler
+  type-handlers-package: com.love.ilove.handler
   configuration:
     # 3.0.8之前版本问题默认将枚举注册为EnumOrdinalTypeHandler,这是错误的方式,默认是 org.apache.ibatis.type.EnumTypeHandler
     # 如果项目之中实体统一使用IEnum或注解的方式,可配置成 com.baomidou.mybatisplus.extension.handlers.EnumTypeHandler,也可省略上面的type-enums-package配置
@@ -37,4 +37,4 @@ jwt:
   secret: mySecret #JWT加解密使用的密钥
   expiration: 600 #JWT的超期限时间(60*60*24)
   jwtHead: Bearer  #JWT负载中拿到开头
-  issUser: iLove #jwt 颁发者信息
+  issUser: ilove #jwt 颁发者信息
