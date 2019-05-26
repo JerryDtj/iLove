@@ -5,12 +5,6 @@ spring:
   profiles:
     active: sc
 
-  # thymeleaf禁用缓存 页面修改实时生效
-  thymeleaf:
-    cache: false
-    encoding: UTF-8
-    mode: HTML5
-
   #jdbc
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver

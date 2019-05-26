@@ -1,6 +1,11 @@
 spring:
   profiles: dev
 
+  # thymeleaf禁用缓存 页面修改实时生效
+  thymeleaf:
+    cache: false
+
+
   datasource:
     url: jdbc:mysql://tianzijiaozi.top:3306/ILove?useUnicode=true&characterEncoding=utf8
 

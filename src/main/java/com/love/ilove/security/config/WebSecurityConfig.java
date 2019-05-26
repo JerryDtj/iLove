@@ -49,7 +49,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/","/register","/login/**","/errorpage").permitAll()
+                .antMatchers("/","/register","/AboutMe.html","/login/**","/errorpage").permitAll()
                 //过滤swagger的请求
                 .antMatchers("/swagger-ui.html","/webjars/**","/v2/**","/swagger-resources/**").permitAll()
                 .antMatchers("/user/**").hasAnyRole("USERDO","USER")
