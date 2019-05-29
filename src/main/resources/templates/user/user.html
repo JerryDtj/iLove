@@ -27,6 +27,7 @@
                     <label class="col-sm-2 control-label">原密码</label>
                     <div class="col-sm-10">
                         <input type="password" class="form-control" id="pwd" placeholder="请输入原密码">
+                        <div style="display: none" class="alert alert-danger warningpwd">错误！请进行一些更改。</div>
                     </div>
                 </div>
                 <div class="form-group">
@@ -42,7 +43,7 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <div class="col-sm-offset-2 col-sm-10">
+                    <div class="col-sm-offset-2 col-sm-10 submit1">
                         <button type="button" onclick="changePwd()" class="btn btn-default">确认修改</button>
                     </div>
                 </div>
@@ -72,18 +73,47 @@
         $(".userDropdown").mouseleave(function(){
             $(this).removeClass("open");
         });
-
     });
+    var isChecked = false;
     function check(){
         return true;
     }
+
+    $("#pwd").blur(function(){
+        var param = {"password":$("#pwd").val(),"username":[[${username}]] };
+        $.ajax({
+            url:[[@{/user/checkpwd}]],
+            type:"post",
+                dataType:'json',
+                data:param,
+                success:function(result){
+                if (result.status==1){
+                    $(".warningpwd").text(result.msg);
+                    $(".warningpwd").show();
+                    $(".submit1").disabled();
+                }else if(result.status==0){
+                    if (result.data) {
+                        $(".warningpwd").hide();
+                        $(".submit1").show();
+                    }else {
+                        $(".warningpwd").text(result.msg);
+                        $(".warningpwd").show();
+                        $(".submit1").hide();
+
+                    }
+
+                }
+            }
+        });
+    });
+
 
     function changePwd() {
         if (check()==true){
             // var param = {"_method":"put","id":$("#id").val(),"password":$("#newpwd").val(),"username":$("#id").val(),"oldPwd":$("#pwd").val()};
             var param = {"id":[[${userId}]],"password":$("#newpwd").val(),"username":[[${username}]],"oldPwd":$("#pwd").val()};
             $.ajax({
-                url:[[@{/updatepwd}]],
+                url:[[@{/user/pwd}]],
                 type:"put",
                 dataType:'json',
                 data:param,

@@ -3,7 +3,7 @@ server:
 
 spring:
   profiles:
-    active: sc
+    active: dev
 
   #jdbc
   datasource:

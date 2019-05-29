@@ -52,7 +52,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/","/register","/AboutMe.html","/login/**","/errorpage").permitAll()
                 //过滤swagger的请求
                 .antMatchers("/swagger-ui.html","/webjars/**","/v2/**","/swagger-resources/**").permitAll()
-                .antMatchers("/user/**").hasAnyRole("USERDO","USER")
+                //测试环境，不过滤任何请求
+                .antMatchers("/user/**").hasRole("USERINFO")
                 //所有请求都要被鉴权
                 .anyRequest().authenticated()
                 .and()

@@ -78,6 +78,9 @@ public class MyBatisPlusTests {
 
 		User u = new User();
 		u.setUsername("2");
+		u.setEnabled(true);
+		u.setAccountNonExpired(true);
+		u.setAccountNonLocked(true);
 		u = userService.get(u);
 		System.out.println("u:"+JSONObject.toJSONString(u));
 	}

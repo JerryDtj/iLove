@@ -21,11 +21,12 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 //	thymeleaf
-	implementation 'org.thymeleaf:thymeleaf-spring5'
-	implementation ('org.thymeleaf.extras:thymeleaf-extras-java8time'){
-		exclude group:'org.thymeleaf',module:'thymeleaf'
-	}
-	implementation ('org.thymeleaf.extras:thymeleaf-extras-springsecurity5')
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+//	implementation 'org.thymeleaf:thymeleaf-spring5'
+//	implementation ('org.thymeleaf.extras:thymeleaf-extras-java8time'){
+//		exclude group:'org.thymeleaf',module:'thymeleaf'
+//	}
+//	implementation ('org.thymeleaf.extras:thymeleaf-extras-springsecurity5')
 //	redis
 	implementation ('org.springframework.boot:spring-boot-starter-data-redis'){
 		exclude group: 'org.springframework.boot', module: 'spring-boot-starter'

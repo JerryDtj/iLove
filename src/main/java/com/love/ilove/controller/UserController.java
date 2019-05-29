@@ -1,26 +1,24 @@
 package com.love.ilove.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.love.ilove.domain.User;
-import com.love.ilove.service.*;
+import com.love.ilove.service.UserRoleService;
+import com.love.ilove.service.UserService;
 import com.love.ilove.utils.ServerResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author dengtianjiao
  */
 @Controller
 @Slf4j
+@RequestMapping("/user")
 public class UserController {
     @Autowired
     UserService userService;
@@ -28,27 +26,43 @@ public class UserController {
     private UserRoleService userRoleService;
 
 
-    @GetMapping("/user")
+    @GetMapping
     public String user(@AuthenticationPrincipal Authentication principal, Model model){
         model.addAttribute("username", principal.getName());
         model.addAttribute("userId",((User) principal.getPrincipal()).getId());
         return "user/user";
     }
 
-    @PutMapping("/updatepwd")
+    @PutMapping("/pwd")
     @ResponseBody
-    public ServerResponse updatePwd(User user){
-        log.debug("user:{}", JSON.toJSONString(user));
-        User u = userService.get(user);
-        if (u!=null){
-            //用户名密码正确
-            BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-            if (bCryptPasswordEncoder.encode(u.getPassword()).equals(bCryptPasswordEncoder.encode(user.getOldPwd()))){
-                int count = userService.update(user);
-                ServerResponse.createBySuccess();
+    public ServerResponse updatePwd(@RequestParam String username,@RequestParam String password,@RequestParam String oldpwd){
+        try {
+            userService.updatePwd(username,password,oldpwd);
+        } catch (Exception e) {
+            if (e.getMessage().equals("ckeckCountOutOfMax")){
+                return ServerResponse.createByErrorMessage("请求次数过多，请稍后在试");
             }
+            return ServerResponse.createByErrorMessage("系统异常，请稍后在试");
         }
-        return ServerResponse.createByError();
+        return ServerResponse.createBySuccess();
+    }
+
+    @PostMapping("/checkpwd")
+    @ResponseBody
+    public ServerResponse<Boolean> checkPwd(@RequestParam String username,@RequestParam String password){
+
+            try {
+                if (userService.checkpwd(username,password)){
+                    return ServerResponse.createBySuccess(true);
+                }
+            } catch (Exception e) {
+                if (e.getMessage().equals("ckeckCountOutOfMax")){
+                    return ServerResponse.createByErrorMessage("请求次数过多，请稍后在试");
+                }
+                return ServerResponse.createByErrorMessage("系统异常，请稍后在试");
+
+            }
+        return ServerResponse.createBySuccessCodeMessage("密码错误",false);
     }
 
     @PostMapping("/register")
@@ -60,6 +74,12 @@ public class UserController {
             return "redirect:register?success";
         }
         return "redirect:register?error";
+    }
+
+    @GetMapping("/addUserInfo")
+    @PreAuthorize("hasRole('ROLE_USERDO')")
+    public void addUserInfo(){
+        log.info("addUserInfo come in");
     }
 
 }

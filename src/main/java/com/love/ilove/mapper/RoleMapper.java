@@ -21,4 +21,7 @@ public interface RoleMapper extends BaseMapper<Role> {
      */
     @Select("select name from role r left join user_role ur on id=role_id and user_role_status=0 where user_id=#{userId}")
     List<String> getNameByUserId(int userId);
+
+    @Select("select r.name from role as r left join `role_permission` as rp ON r.`id`=rp.`role_id` left join permission as p on p.id = rp.`permission_id` where p.`url`= #{url}")
+    List<String> getNameByUrl(String url);
 }

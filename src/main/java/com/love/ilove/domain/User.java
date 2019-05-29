@@ -32,11 +32,11 @@ public class User implements UserDetails {
     @TableField(exist = false)
     private String oldPwd;
 
-    private boolean enabled;
+    private boolean enabled = true;
 
-    private boolean accountNonLocked;
+    private boolean accountNonLocked = true;
 
-    private boolean accountNonExpired;
+    private boolean accountNonExpired = true;
 
     @TableField(exist = false)
     private List<String> roles;

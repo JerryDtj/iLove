@@ -52,8 +52,7 @@ public class RolePermissionVoter implements AccessDecisionVoter<Object> {
      *      返回值有3种：ACCESS_GRANTED 同意，ACCESS_ABSTAIN 弃权，ACCESS_DENIED 拒绝
      * 此处处理逻辑如下：
      *      1. 权限和请求路径都不能为空，如果为空，直接拒绝
-     *      2. 如果attributes不为空，也就是说系统中已经配置了对应的权限，那么直接弃权，交由roleVoter处理
-     *      3. 如果attributes为空，那么去数据库中查询对应的权限。有就通过，没有就拒绝
+     *      2. 如果不为空，那么根据路径去查询这个路径需要的用户角色，然后和已有角色比较，有就投赞成票，没有就弃权
      * @param authentication 登录用户拥有的权限
      * @param object 访问请求 HttpServletRequest
      * @param attributes 需要的权限，系统或者数据中配置
@@ -67,6 +66,7 @@ public class RolePermissionVoter implements AccessDecisionVoter<Object> {
             //-1： 拒绝 0：弃权 1：同意
             return ACCESS_DENIED;
         }
+
 
         HttpServletRequest request = ((FilterInvocation)object).getHttpRequest();
         String url = request.getRequestURI();

@@ -34,4 +34,22 @@ public interface UserService {
      */
     User getUserRoleByUserName(String userName);
 
+    /**
+     * 用户名密码校验接口
+     * 用户调用时，会在redis中增加 checkpwd_${username} 的一条记录
+     * 格式为{"username":${username},checkTime:${dateTime},count:${count}}，过期时间为1800秒
+     * 校验逻辑为：当用户次数大于5次时，那么提示校验失败次数过多，请半小时后在试，
+     * @param username
+     * @param password
+     * @return
+     */
+    boolean checkpwd(String username, String password);
+
+    /**
+     * 更新用户名密码
+     * @param username
+     * @param password
+     * @param oldpwd
+     */
+    void updatePwd(String username, String password, String oldpwd);
 }
