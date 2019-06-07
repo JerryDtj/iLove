@@ -20,6 +20,7 @@
     <div id="myTabContent" class="tab-content">
         <div class="tab-pane fade in active" id="userinfo" style="text-align: center; margin-top: 10%">
             <img src="http://upload.jianshu.io/users/upload_avatars/3424642/fb55f16faaf6.jpg?imageMogr2/auto-orient/strip|imageView2/1/w/240/h/240" alt="avatar" class="img-circle" style="margin: 0 auto">
+<!--            <img src="http://upload.jianshu.io/users/upload_avatars/3424642/fb55f16faaf6.jpg?imageMogr2/auto-orient/strip|imageView2/1/w/240/h/240" alt="avatar" class="img-circle" style="margin: 0 auto">-->
             <p th:text="${username}" style="margin-top: 25px; font-size: 20; color: crimson">Anoy</p>
         </div>
         <div class="tab-pane fade in" id="updatePwd">
@@ -99,6 +100,7 @@
                 <div class="form-group">
                         <label class="col-sm-2 control-label">上传头像</label>
                         <div class="col-sm-10">
+                            <input type="text" id="avatar" style="display: none">
 <!--                            <input id="uploadAvatar" type="file" class="file" data-preview-file-type="text">-->
                             <input type="file" name="image" id="file" accept="image/*">
                             <input type="button" id="uploadAvatar" onclick="uploadAvatar()" value="开始上传">
@@ -143,7 +145,6 @@
     }
 
     function getUserInfo(){
-        console.info(12312312)
         // var param=[];
         var data = {"userId":[[${userId}]]};
         $.ajax({
@@ -159,6 +160,10 @@
                     $("#gender").val(result.data.gender);
                     $("#province").val(result.data.province);
                     $("#birthday").val(result.data.birthday);
+                    if (result.data.avatar!=null){
+                        $(".img-circle").attr("src",result.data.avatar);
+                    }
+                    console.info(result.data);
                 }
             }
         });
@@ -224,12 +229,13 @@
         data["gender"] = $("#gender").val();
         data["province"] = $("#province").val();
         data["year"] = $("#birthday").val();
+        data["avatar"] = $("#avatar").val();
         // param.push(data)
             // var param = {"_method":"put","id":$("#id").val(),"password":$("#newpwd").val(),"username":$("#id").val(),"oldPwd":$("#pwd").val()};
         // var param = {"userId":"",:,"":$("#nickName").val(),"":$("#gender").val(),"":$("#province").val(),"birthday":$("#").val()};
         console.info(data);
         $.ajax({
-            url:[[@{/userInfo/a}]],
+            url:[[@{/userInfo}]],
             type:"post",
             contentType: "application/json;charset=UTF-8",
             dataType:'json',
@@ -267,6 +273,8 @@
                             // ?vframe/jpg/offset/0/w/480/h/360：用于获取视频截图的后缀，0：秒，w：宽，h：高
                             $("#image").attr("src",result.data.url+"?imageView2/2/w/400/h/400/q/100");
                             $("#image").show();
+                            $("#avatar").val(result.data.url);
+
                         }
                     };
                     var putExtra = {
