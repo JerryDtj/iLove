@@ -3,7 +3,7 @@ server:
 
 spring:
   profiles:
-    active: sc
+    active: dev
 
   #jdbc
   datasource:
@@ -32,3 +32,29 @@ jwt:
   expiration: 600 #JWT的超期限时间(60*60*24)
   jwtHead: Bearer  #JWT负载中拿到开头
   issUser: ilove #jwt 颁发者信息
+
+qiniu:
+  #  七牛云公共配置
+  config:
+    accessKey: 'xP26v6i5ZX5ricklajjShhW9Jjc20X-'
+    secretKey: "YfDr4HEk9cgtjscKa7BgIbGvU6u5W79kNhJPVi0A"
+  #  公开空间配置
+  publicSpace:
+    #    名称
+    bucket: lovephoto
+    #    绑定的域名
+    url: 'http://psk85spi5.bkt.clouddn.com'
+    #    限定用户上传的文件类型，限定多个以;分割，如：image/jpeg;image/png表示只允许上传jpg和png类型的图片
+    mimeLimit:
+      #      允许上传图片类型 image/* 表示允许上传所有图片类型，image/jpeg;image/png表示只允许上传jpg和png类型的图片.
+      img:
+        #        单位byte
+        maxsize: 5242880 #5*1024*1024
+        minsize:
+      #      不允许上传的类型：!application/json;text/plain表示禁止上传json文本和纯文本。多项以;分割
+      reject:
+
+  #  私有空间配置
+  securitySpace:
+    bucket:
+    url:

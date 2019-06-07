@@ -6,7 +6,6 @@ import com.love.ilove.service.UserService;
 import com.love.ilove.utils.ServerResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -76,10 +75,6 @@ public class UserController {
         return "redirect:register?error";
     }
 
-    @GetMapping("/addUserInfo")
-    @PreAuthorize("hasRole('ROLE_USERDO')")
-    public void addUserInfo(){
-        log.info("addUserInfo come in");
-    }
+
 
 }

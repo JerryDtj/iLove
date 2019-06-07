@@ -1,4 +1,4 @@
-package com.love.ilove.security.config;
+package com.love.ilove.config;
 
 import com.love.ilove.filter.jwt.JwtAuthenticationFilter;
 import com.love.ilove.handler.LoginSuccessHandler;
@@ -8,21 +8,12 @@ import com.love.ilove.security.service.UserDetailsServiceImpl;
 import com.love.ilove.security.voter.RolePermissionVoter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.access.AccessDecisionManager;
-import org.springframework.security.access.AccessDecisionVoter;
-import org.springframework.security.access.vote.AuthenticatedVoter;
-import org.springframework.security.access.vote.RoleVoter;
-import org.springframework.security.access.vote.UnanimousBased;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.access.expression.WebExpressionVoter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * @author dengtianjiao
@@ -53,9 +44,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 //过滤swagger的请求
                 .antMatchers("/swagger-ui.html","/webjars/**","/v2/**","/swagger-resources/**").permitAll()
                 //测试环境，不过滤任何请求
-                .antMatchers("/user/**").hasRole("USERINFO")
+//                .antMatchers("/user/**").hasRole("USERINFO")
                 //所有请求都要被鉴权
-                .anyRequest().authenticated()
+//                .anyRequest().authenticated()
                 .and()
                 .exceptionHandling()
                 .accessDeniedHandler(new GoAccessDeniedHandler())
@@ -69,7 +60,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .csrf().disable()
 //                 自定义accessDecisionManager
-                .authorizeRequests().accessDecisionManager(accessDecisionManager())
+//                .authorizeRequests().accessDecisionManager(accessDecisionManager())
 
 
         ;
@@ -92,16 +83,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         ;
     }
 
-    @Bean
-    public AccessDecisionManager accessDecisionManager() {
-        List<AccessDecisionVoter<? extends Object>> decisionVoters
-                = Arrays.asList(
-                        new RoleVoter(),
-                new WebExpressionVoter(),
-                rolePermissionVoter,
-                new AuthenticatedVoter());
-        return new UnanimousBased(decisionVoters);
-    }
+//    @Bean
+//    public AccessDecisionManager accessDecisionManager() {
+//        List<AccessDecisionVoter<? extends Object>> decisionVoters
+//                = Arrays.asList(
+//                        new RoleVoter(),
+//                new WebExpressionVoter(),
+//                rolePermissionVoter,
+//                new AuthenticatedVoter());
+//        return new UnanimousBased(decisionVoters);
+//    }
 
 
 }
