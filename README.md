@@ -13,7 +13,9 @@
 一个基于gradle的婚恋网站. 
   - 下载运行需要先集成gradle
   - gradle下载安装请参考官网 https://gradle.org/install/
-
+  - 所有的新功能/问题我都会先发布一个isuess出来,然后在master分支上建立出对应isuess的功能.完成后会把对应的isuess合并到master
+  - 所有的部署全部依靠jekins自动部署,di工具暂时还没有.
+  
 ## 技术栈
   - Spring Security
   - Spring Security OAuth2
