@@ -58,3 +58,17 @@ qiniu:
   securitySpace:
     bucket:
     url:
+emai:
+  userName: "jerry@mail.tianzijiaozi.top"
+  protocol: "smtp"
+  host: "smtp.exmail.qq.com"
+  port: "465"
+  isAuth: "true"
+  usessl: "true"
+#  fromUser: "iLove"
+#  最大发送次数
+  maxSendNum: 5
+#  验证码最大校验次数
+  maxCheckNum: 5
+#  邮件验证码保留时间 单位：分钟
+  keepMins: 120

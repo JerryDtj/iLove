@@ -71,7 +71,7 @@ public class UserRoleServiceImpl implements UserRoleService {
 
         if (userId!=null){
             //用户没有注册过
-            userInfo.setUserId(userId);
+            userInfo.setId(userId);
             userInfoMapper.insert(userInfo);
         }
         return userId;

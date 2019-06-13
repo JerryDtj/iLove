@@ -1,6 +1,6 @@
 package com.love.ilove.domain;
 
-import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.love.ilove.enums.Gender;
@@ -18,12 +18,12 @@ import java.util.Date;
 @Data
 @TableName
 public class UserInfo {
-    @TableId(type = IdType.AUTO)
-    Integer id;
+    /**
+     * user表id字段
+     */
+    @TableId
     @NotNull(message = "userId不能为空")
-    Integer userId;
-    @Email(message = "邮箱格式不正确")
-    String email;
+    Integer id;
     Date createTime;
     @NotBlank(message = "昵称不能为空")
     String nickName;
@@ -31,4 +31,11 @@ public class UserInfo {
     String province;
     Date year;
     String avatar;
+    @Email(message = "邮箱格式不正确")
+    String email;
+    /**
+     * 邮件验证码
+     */
+    @TableField(exist = false)
+    String emailCode;
 }

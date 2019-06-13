@@ -37,7 +37,7 @@ public class QiNiuUtils {
 //
 //        System.out.println(getPrivateDownloadUrl("http://img.tianzijiaozi.top/816b1407-6778-4fc5-8b05-f04e23f82b40.png"));
 
-        File file = new File("/Users/dengtianjiao/Downloads/1.png");
+        File file = new File("/Users/dengtianjiao/Downloads/images/1.jpg");
 
         String bucketNm = "lovephoto";
 

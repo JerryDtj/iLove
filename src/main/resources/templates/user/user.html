@@ -20,7 +20,6 @@
     <div id="myTabContent" class="tab-content">
         <div class="tab-pane fade in active" id="userinfo" style="text-align: center; margin-top: 10%">
             <img src="http://upload.jianshu.io/users/upload_avatars/3424642/fb55f16faaf6.jpg?imageMogr2/auto-orient/strip|imageView2/1/w/240/h/240" alt="avatar" class="img-circle" style="margin: 0 auto">
-<!--            <img src="http://upload.jianshu.io/users/upload_avatars/3424642/fb55f16faaf6.jpg?imageMogr2/auto-orient/strip|imageView2/1/w/240/h/240" alt="avatar" class="img-circle" style="margin: 0 auto">-->
             <p th:text="${username}" style="margin-top: 25px; font-size: 20; color: crimson">Anoy</p>
         </div>
         <div class="tab-pane fade in" id="updatePwd">
@@ -57,12 +56,15 @@
             </form>
         </div>
         <div class="tab-pane fade" id="updateUserInfo">
-            <div class="form-horizontal">
+            <div class="form-horizontal" id="userInfoContent">
+<!--                <input type="text" id="infoId" style="display: none">-->
                 <div class="form-group">
                     <label class="col-sm-2 control-label">email 地址</label>
                     <div class="col-sm-10">
-                        <input type="input" class="form-control" id="email" placeholder="email">
-                        <div style="display: none" class="alert alert-danger warningpwd">错误！请进行一些更改。</div>
+                        <span id="emailValue"></span>
+                        <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#bandingEmail">
+                            绑定邮箱
+                        </button>
                     </div>
                 </div>
                 <div class="form-group">
@@ -113,6 +115,47 @@
                     </div>
                 </div>
             </div>
+
+            <!-- 模态框（Modal）绑定邮箱 -->
+            <div class="modal fade" id="bandingEmail" tabindex="-1" role="dialog" aria-labelledby="bandingEmailTitle" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal"aria-hidden="true">×</button>
+                            <h4 class="modal-title" id="bandingEmailTitle">
+                                绑定邮箱
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-horizontal">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">邮箱</label>
+                                    <div class="col-sm-10">
+                                        <input type="input" class="form-control" id="email" placeholder="请输入邮箱">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label"></label>
+                                    <div class="col-sm-10">
+                                        <button type="button" id="emailSendBtn" onclick="emailSend()" class="btn btn-default">发送验证码</button>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">验证码</label>
+                                    <div class="col-sm-10">
+                                        <input type="input" class="form-control" id="emailCode" placeholder="请输入验证码">
+                                        <div style="display: none" class="alert alert-danger warningEmail">错误！请进行一些更改。</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                            <button type="button" onclick="saveorupdateEmail()" class="btn btn-primary">提交更改</button>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
         </div>
         <div class="tab-pane fade" id="jmeter">
             <p>jMeter 是一款开源的测试软件。它是 100% 纯 Java 应用程序，用于负载和性能测试。</p>
@@ -155,15 +198,21 @@
             data:data,
             success:function(result) {
                 if (result.data!=null){
+                    $("#userInfoContent").attr("methodType","PUT");
+                    // $("#infoId").val(result.data.id);
                     $("#email").val(result.data.email);
+                    $("#emailValue").text(result.data.email);
                     $("#nickName").val(result.data.nickName);
                     $("#gender").val(result.data.gender);
                     $("#province").val(result.data.province);
                     $("#birthday").val(result.data.birthday);
                     if (result.data.avatar!=null){
-                        $(".img-circle").attr("src",result.data.avatar);
+                        var url = result.data.avatar +"_avatar"
+                        $(".img-circle").attr("src",url);
                     }
                     console.info(result.data);
+                }else {
+                    $("#userInfoContent").attr("methodType","POST");
                 }
             }
         });
@@ -197,6 +246,64 @@
         });
     });
 
+    $("#emailCode").blur(function(){
+        var emailCode = $("#emailCode").val();
+        if (emailCode!=null&&emailCode!=undefined&&emailCode!=''){
+            var param = {"emailCode":$("#emailCode").val(),"userId":[[${userId}]] };
+            $.ajax({
+                url:'/userInfo/emailCheck',
+                type:"GET",
+                dataType:'json',
+                data:param,
+                success:function(result){
+                    if (result.status==1){
+                        $(".warningEmail").show();
+                    }else if(result.status==0){
+                        $(".warningEmail").hide();
+                    }
+                }
+            });
+        }
+    });
+
+    function emailSend(){
+        var param = {"email":$("#email").val(),"id":[[${userId}]],"nickName":[[${username}]]};
+        $.ajax({
+            url:'/userInfo/emailSend',
+            type:"GET",
+            dataType:'json',
+            data:param,
+            success:function(result){
+                if (result.status==1){
+                    alert(result.msg);
+                }else if(result.status==0){
+                    $("emailSendBtn").attr("disable","");
+                    alert("发送成功，请到您的邮箱中查收验证码");
+                }
+            }
+        });
+    }
+
+    function saveorupdateEmail(){
+        var param = {"email":$("#email").val(),"id":[[${userId}]],"nickName":[[${username}]] };
+        $.ajax({
+            url:'/userInfo/saveOrUpdateEmail',
+            type:"post",
+            dataType:'json',
+            data:param,
+            success:function(result){
+                if (result.status==1){
+                    alert(result.msg);
+                }else if(result.status==0){
+
+                    $('#emailValue').text(param.email);
+                    alert("绑定成功");
+                    $('#bandingEmail').modal('hide');
+                }
+            }
+        });
+    }
+
 
     function changePwd() {
         if (check()==true){
@@ -223,27 +330,46 @@
     function userInfo() {
         // var param=[];
         var data = {};
-        data["userId"]= [[${userId}]];
-        data["email"] = $("#email").val();
-        data["nickName"] = $("#nickName").val();
-        data["gender"] = $("#gender").val();
-        data["province"] = $("#province").val();
-        data["year"] = $("#birthday").val();
-        data["avatar"] = $("#avatar").val();
-        // param.push(data)
-            // var param = {"_method":"put","id":$("#id").val(),"password":$("#newpwd").val(),"username":$("#id").val(),"oldPwd":$("#pwd").val()};
-        // var param = {"userId":"",:,"":$("#nickName").val(),"":$("#gender").val(),"":$("#province").val(),"birthday":$("#").val()};
-        console.info(data);
-        $.ajax({
-            url:[[@{/userInfo}]],
-            type:"post",
-            contentType: "application/json;charset=UTF-8",
-            dataType:'json',
-            data:JSON.stringify(data),
-            success:function(result) {
-                console.info(result);
-            }
-        });
+        data["id"]= [[${userId}]];
+        if ($("#emailValue").text()!=""){
+            data["email"] = $("#emailValue").text();
+        }
+        if ($("#nickName").val()!=""){
+            data["nickName"] = $("#nickName").val();
+        }else {
+            alert("昵称不能为空");
+        }
+        if ($("#gender").val()!=""){
+            data["gender"] = $("#gender").val();
+        }
+        if ($("#province").val()!=""){
+            data["province"] = $("#province").val();
+        }
+        if ($("#birthday").val()!=""){
+            data["year"] = $("#birthday").val();
+        }
+        if ($("#avatar").val()!=""){
+            data["avatar"] = $("#avatar").val();
+        }
+
+        var methodType = $("#userInfoContent").attr("methodType");
+        if (methodType!=undefined&&methodType!=null){
+            $.ajax({
+                url:'/userInfo/saveorupdate',
+                type:'post',
+                contentType: "application/json;charset=UTF-8",
+                dataType:'json',
+                data:JSON.stringify(data),
+                success:function(result) {
+                    if(result.status==0){
+                        alert("成功");
+                    }else {
+                        alert(result.msg)
+                    }
+                }
+            });
+        }
+
     }
     
     function uploadAvatar() {
@@ -271,7 +397,7 @@
                         complete(res){                       //成功后
                             // ?imageView2/2/h/100：展示缩略图，不加显示原图
                             // ?vframe/jpg/offset/0/w/480/h/360：用于获取视频截图的后缀，0：秒，w：宽，h：高
-                            $("#image").attr("src",result.data.url+"?imageView2/2/w/400/h/400/q/100");
+                            $("#image").attr("src",result.data.url+"_avatar");
                             $("#image").show();
                             $("#avatar").val(result.data.url);
 
