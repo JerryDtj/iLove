@@ -1,5 +1,8 @@
 # iLove
 
+喜欢的可以点下星星。强烈求星星.watch 和 fork 就不必了.因为项目还在开发中.所以fork了意义也不大.
+
+
 ## 项目地址
 
   https://tianzijiaozi.top
