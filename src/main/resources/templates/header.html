@@ -78,6 +78,11 @@
                             </ul>
                         </li>
                         <li th:if="${#httpServletRequest.remoteUser}">
+                            <a th:href="@{/photos}">
+                                <span class="glyphicon glyphicon-picture"></span>
+                            </a>
+                        </li>
+                        <li th:if="${#httpServletRequest.remoteUser}">
                             <ul class="nav navbar-nav">
                                 <li class="dropdown">
                                     <a href="#"  data-toggle="dropdown">
@@ -102,7 +107,36 @@
             </div>
         </nav>
         <script th:inline="javascript">
+            var token = [[${token}]];
             $(function () {
+                if (token!=null) {
+                    setCookie("token",token);
+                }else {
+                    token = getCookie("token");
+                }
+                console.log("拿到token:"+token);
+
+
+                function setCookie(key,value){
+                    var d = new Date();
+                    d.setTime(d.getTime()+(10*60*1000));
+                    var expires = "expires="+d.toGMTString();
+                    document.cookie = key + "=" + value + "; path=/; " + expires;
+                }
+
+                function getCookie(key){
+                    var name = key + "=";
+                    var ca = document.cookie.split(';');
+                    for(var i=0; i<ca.length; i++)
+                    {
+                        var c = ca[i].trim();
+                        if (c.indexOf(name)==0) return c.substring(name.length,c.length);
+                    }
+                    return "";
+                }
+
+
+
                 $('#user a').click(function (e) {
                     var location = window.location.href;
                     console.info(location.indexOf("/user"));

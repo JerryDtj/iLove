@@ -1,222 +1,129 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="zh">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-    <script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
-
-<!--    <script src="https://unpkg.com/qiniu-js@2.5.4/dist/qiniu.min.js"></script>-->
-<!--    <script src="http://jssdk-v2.demo.qiniu.io/dist/qiniu.min.js"></script>-->
-<!--    <script src="http://jssdk-v2.demo.qiniu.io/js/plupload.full.min.js"></script>-->
-
-    <script src='http://jssdk.demo.qiniu.io/dist/qiniu.min.js'></script>
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>js上传图片到七牛</title>
+    <style>
+        /*#container{
+            width:200px;
+            height:200px;
+            border:1px solid #9d9d9d;
+            border-radius: 6px;
+            margin:50px auto;
+            position: relative;
+            overflow: hidden;
+        }
+        .upload-progress{
+            width:100%;
+            height:100%;
+            position: absolute;
+            top:0;
+            left:0;
+            background: rgba(0,0,0,0.5);
+            z-index: 5;
+            color:#fff;
+            line-height: 200px;
+            text-align: center;
+            display: none;
+        }
+        #uploadImage{
+            width:100%;
+            height:100%;
+            position: absolute;
+            top:0;
+            left:0;
+            z-index: 2;
+            text-align: center;
+            line-height: 200px;
+            cursor: pointer;
+        }
+        #container img{
+            width:100%;
+            position: absolute;
+            top:0;
+            left:0;
+            z-index: 1;
+        }*/
+    </style>
 </head>
 <body>
-    <form method="post" action="http://upload.qiniup.com/" enctype="multipart/form-data">
-        <input name="key" type="hidden" value="1">
-        <input name="x:account" type="hidden" value="1">
-        <input name="x:creat" type="hidden" value="100">
-        <input name="token" type="hidden" value="xP26v6i5ZX5ricklajjShhW9Jjc20X-PKc9X9MOW:qsAyfCtSi_sdCc9yBvx2je_zDtA=:eyJzY29wZSI6ImxvdmVwaG90bzoxIiwiZGVhZGxpbmUiOjE1NTk3ODI4ODZ9">
-        <input name="file" type="file" />
-        <input type="submit" value="上传文件" />
-    </form>
-    <div>
-        <p class="tip1">本demo实现的图片预览功能需要浏览器支持data URL，IE8+以及其他标准浏览器都是支持的</p>
-        <div class="btn-wraper" style="position: relative;" id="container">
-            <button id="pickfiles">选择文件</button>
-            <ul id="file-list">
-            </ul>
-        </div>
-        <button id="batchUpload">上传</button>
-    </div>
-
-    <script>
-        // $(function(){
-            var uploader = Qiniu.uploader({
-                runtimes: 'html5,flash,html4',    //上传模式,依次退化
-                browse_button: 'pickfiles',       //上传选择的点选按钮，**必需**
-                // uptoken_url: 'http://localhost:8080/qiniu/getToken',            //Ajax请求upToken的Url，**强烈建议设置**（服务端提供）
-                uptoken : 'xP26v6i5ZX5ricklajjShhW9Jjc20X-PKc9X9MOW:fEq-iAp8xbHKKwshS9-rnOXlTC8=:eyJzY29wZSI6ImxvdmVwaG90byIsImRlYWRsaW5lIjoxNTU5Nzk4Mjc4fQ==', //若未指定uptoken_url,则必须指定 uptoken ,uptoken由其他程序生成
-                // unique_names: true, // 默认 false，key为文件名。若开启该选项，SDK为自动生成上传成功后的key（文件名）。
-                // save_key: true,   // 默认 false。若在服务端生成uptoken的上传策略中指定了 `sava_key`，则开启，SDK会忽略对key的处理
-                domain: 'http://psk85spi5.bkt.clouddn.com',   //bucket 域名，下载资源时用到，**必需**
-                get_new_uptoken: false,  //设置上传文件的时候是否每次都重新获取新的token
-                // container: 'container',           //上传区域DOM ID，默认是browser_button的父元素，
-                max_file_size: '100mb',           //最大文件体积限制
-                flash_swf_url: 'js/plupload/Moxie.swf',  //引入flash,相对路径
-                max_retries: 3,                   //上传失败最大重试次数
-                // dragdrop: true,                   //开启可拖曳上传
-                // drop_element: 'container',        //拖曳上传区域元素的ID，拖曳文件或文件夹后可触发上传
-                chunk_size: '4mb',                //分块上传时，每片的体积
-                auto_start: true,                 //选择文件后自动上传，若关闭需要自己绑定事件触发上传
-                filters: {  //对上传文件类型进行限制
-                    mime_types : [
-                        { title : "Image files", extensions : "jpg,gif,png"}
-                    ],
-                    max_file_size: "4mb",
-                    prevent_duplicates: true
-                },
-                init: {
-                    'FilesAdded': function(up, files) {
-                        plupload.each(files, function(file) {
-                            // 文件添加进队列后,处理相关的事情
-                        });
-                    },
-                    'BeforeUpload': function(up, file) {
-                        // 每个文件上传前,处理相关的事情
-                    },
-                    'UploadProgress': function(up, file) {
-                        // 每个文件上传时,处理相关的事情
-                    },
-                    'FileUploaded': function(up, file, info) {
-                        // 每个文件上传成功后,处理相关的事情
-                        // 其中 info.response 是文件上传成功后，服务端返回的json，形式如
-                        // {
-                        //    "hash": "Fh8xVqod2MQ1mocfI4S4KpRL6D98",
-                        //    "key": "gogopher.jpg"
-                        //  }
-                        // 参考http://developer.qiniu.com/docs/v6/api/overview/up/response/simple-response.html
-
-                        var domain = up.getOption('domain');
-                        var res = $.parseJSON(info.response);
-                        // 获取上传成功后的文件的Url
-                        var sourceLink = domain + res.key;
-                        console.info(sourceLink);
-                    },
-                    'Error': function(up, err, errTip) {
-                        //上传出错时,处理相关的事情
-
-                    },
-                    'UploadComplete': function() {
-                        //队列文件处理完毕后,处理相关的事情
-
-                    },
-                    'Key': function(up, file) {
-                        // 若想在前端对每个文件的key进行个性化处理，可以配置该函数
-                        // 该配置必须要在 unique_names: false , save_key: false 时才生效
-                        // console.info(up);
-                        console.info(file);
-                        var key = "1-";
-                        var timestamp = Date.parse(new Date());
-                        key = key+timestamp;
-                        // do something with key here
-                        return key
-                    }
-                }
-            // });
-
-            // domain 为七牛空间（bucket)对应的域名，选择某个空间后，可通过"空间设置->基本设置->域名设置"查看获取
-
-            // uploader 为一个plupload对象，继承了所有plupload的方法，参考http://plupload.com/docs
-
-            // //在实例对象上调用init()方法进行初始化
-            // uploader.init();
-            // //绑定各种事件，并在事件监听函数中做你想做的事
-            // uploader.bind('FilesAdded',function(uploader,files){
-            //     //每个事件监听函数都会传入一些很有用的参数，
-            //     //我们可以利用这些参数提供的信息来做比如更新UI，提示上传进度等操作
-            // });
-            // uploader.bind('UploadProgress',function(uploader,file){
-            //     //每个事件监听函数都会传入一些很有用的参数，
-            //     //我们可以利用这些参数提供的信息来做比如更新UI，提示上传进度等操作
-            // });
-
-        });
-        function batchUpload() {
-            uploader.start(); //调用实例对象的start()方法开始上传文件，当然你也可以在其他地方调用该方法
+<div id="container">
+    <div id="uploadImage">选择文件</div>
+    <div class="upload-progress"></div>
+</div>
+<script type="text/javascript" src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+<script src="http://cdn.staticfile.org/plupload/2.1.2/plupload.full.min.js"></script>
+<script src="https://unpkg.com/qiniu-js@2.5.4/dist/qiniu.min.js"></script>
+<!--<script src="/js/plupload/zh_CN.js"></script>  &lt;!&ndash; 语言包 &ndash;&gt;-->
+<script src="http://cdn.staticfile.org/qiniu-js-sdk/1.0.14-beta/qiniu.min.js"></script>
+<!--<script src="/moxie.js"></script>-->
+<!--<script src="/plupload.min.js"></script>-->
+<!--<script src="/qiniu.js"></script>-->
+<script>
+    var uploader = Qiniu.uploader({
+        disable_statistics_report: false,                                   // 禁止自动发送上传统计信息到七牛，默认允许发送
+        runtimes: 'html5,flash,html4',                                      // 上传模式，依次退化
+        browse_button: 'uploadImage',                                       // 上传选择的点选按钮，必需
+        container: 'container',                                             // 上传区域DOM ID，默认是browser_button的父元素
+        max_file_size: '100mb',                                             // 最大文件体积限制
+        flash_swf_url: 'Moxie.swf',                                         // 引入flash，相对路径
+        dragdrop: false,                                                    // 关闭可拖曳上传
+        chunk_size: '4mb',                                                  // 分块上传时，每块的体积
+        multi_selection: !(moxie.core.utils.Env.OS.toLowerCase() === "ios"),
+        // uptoken_url: 'XXX',                                                 // 在初始化时，uptoken，uptoken_url，uptoken_func三个参数中必须有一个被设置,uptoken是上传凭证，由其他程序生成;uptoken_url是提供了获取上传凭证的地址，如果需要定制获取uptoken的过程则可以设置uptoken_func;其优先级为uptoken > uptoken_url > uptoken_func
+        uptoken: 'xP26v6i5ZX5ricklajjShhW9Jjc20X-PKc9X9MOW:0Fmw3N6raMEf1eAb3JNOl00oYgc=:eyJzY29wZSI6Imlsb3ZlIiwiZGVhZGxpbmUiOjE1NjA2NDM4NTB9',                                                 // 在初始化时，uptoken，uptoken_url，uptoken_func三个参数中必须有一个被设置,uptoken是上传凭证，由其他程序生成;uptoken_url是提供了获取上传凭证的地址，如果需要定制获取uptoken的过程则可以设置uptoken_func;其优先级为uptoken > uptoken_url > uptoken_func
+        domain: 'lovephoto',                                                      // bucket域名，下载资源时用到，必需
+        get_new_uptoken: true,                                              // 设置上传文件的时候是否每次都重新获取新的uptoken
+        auto_start: true,                                                   // 选择文件后自动上传，若关闭需要自己绑定事件触发上传
+        max_retries: 3,                                                     // 上传失败最大重试次数
+        // save_key: true,
+        // resize: {                                                           // 想限制上传图片尺寸，直接用resize这个属性
+        //     width: 300,
+        //     height: 300
+        // },
+        init: {
+            'FilesAdded': function(up, files) {                             // 文件添加进队列后，处理相关的事情
+                plupload.each(files, function(file) {
+                    console.log(file)
+                });
+            },
+            'BeforeUpload': function(up, file) {                            // 每个文件上传前，处理相关的事情
+                console.log("开始上传之前");
+                $(".upload-progress").show();
+            },
+            'UploadProgress': function(up, file) {                          // 每个文件上传时，处理相关的事情
+                console.log("上传中");
+                $(".upload-progress").html("上传进度:"+file.percent + "%");
+            },
+            'FileUploaded': function(up, file, info) {                       // 每个文件上传成功后，处理相关的事情
+                console.log("上传成功");
+                var fileInfo = $.parseJSON(info)
+                $(".upload-progress").hide();
+                var img = new Image();                                      //创建一个Image对象，实现图片的预下载
+                img.src = "http://img.tianzijiaozi.top/"+fileInfo.key;
+                $("#container").append(img);
+            },
+            'Key': function(up, file) {
+                // 若想在前端对每个文件的key进行个性化处理，可以配置该函数
+                // 该配置必须要在unique_names: false，save_key: false时才生效
+                console.log("自定义key");
+                console.log(file);
+                console.log(up);
+                var key = "1-"+file.id;
+                // do something with key here
+                return key
+            },
+            'Error': function(up, err, errTip) {
+                console.log("上传出错")
+            },
+            'UploadComplete': function() {
+                //队列文件处理完毕后，处理相关的事情
+            }
         }
-
-
-        //引入Plupload 、qiniu.js后
-//         var uploader = Qiniu.uploader({
-//             runtimes: 'html5,flash,html4', //上传模式,依次退化
-//             browse_button: 'pickfiles', //上传选择的点选按钮，**必需**
-//             uptoken:'',
-// // uptoken_url: getToken(), //Ajax请求upToken的Url，**强烈建议设置**（服务端提供）
-// // uptoken : '', //若未指定uptoken_url,则必须指定 uptoken ,uptoken由其他程序生成
-// // unique_names: true, // 默认 false，key为文件名。若开启该选项，SDK为自动生成上传成功后的key（文件名）。
-// // save_key: true, // 默认 false。若在服务端生成uptoken的上传策略中指定了 `sava_key`，则开启，SDK会忽略对key的处理
-//             domain: 'http://qiniu-plupload.qiniudn.com/', //bucket 域名，下载资源时用到，**必需**
-//             get_new_uptoken: false, //设置上传文件的时候是否每次都重新获取新的token
-//             container: 'container', //上传区域DOM ID，默认是browser_button的父元素，
-//             max_file_size: '100mb', //最大文件体积限制
-//             flash_swf_url: 'Moxie.swf', //引入flash,相对路径
-//             max_retries: 3, //上传失败最大重试次数
-//             dragdrop: true, //开启可拖曳上传
-//             drop_element: 'container', //拖曳上传区域元素的ID，拖曳文件或文件夹后可触发上传
-//             chunk_size: '4mb', //分块上传时，每片的体积
-//             auto_start: false, //选择文件后自动上传，若关闭需要自己绑定事件触发上传
-//             init: {
-//                 'FilesAdded': function(up, files) {
-//                     plupload.each(files, function(file) {
-// // 文件添加进队列后,处理相关的事情
-//                         console.log(file.name);
-//                     });
-//                 },
-//                 'BeforeUpload': function(up, file) {
-// // 每个文件上传前,处理相关的事情
-//                 },
-//                 'UploadProgress': function(up, file) {
-// // 每个文件上传时,处理相关的事情
-//                 },
-//                 'FileUploaded': function(up, file, info) {
-// // 每个文件上传成功后,处理相关的事情
-// // 其中 info 是文件上传成功后，服务端返回的json，形式如
-// // {
-// // "hash": "Fh8xVqod2MQ1mocfI4S4KpRL6D98",
-// // "key": "gogopher.jpg"
-// // }
-// // 参考http://developer.qiniu.com/docs/v6/api/overview/up/response/simple-response.html
-//
-// // var domain = up.getOption('domain');
-// // var res = parseJSON(info);
-// // var sourceLink = domain + res.key; 获取上传成功后的文件的Url
-//                 },
-//                 'Error': function(up, err, errTip) {
-// //上传出错时,处理相关的事情
-//                 },
-//                 'UploadComplete': function() {
-// //队列文件处理完毕后,处理相关的事情
-//                 },
-//                 'Key': function(up, file) {
-// // 若想在前端对每个文件的key进行个性化处理，可以配置该函数
-// // 该配置必须要在 unique_names: false , save_key: false 时才生效
-//
-//                     var key = "12.png";
-// // do something with key here
-//                     return key
-//                 }
-//             }
-//         });
-//
-//         // domain 为七牛空间（bucket)对应的域名，选择某个空间后，可通过"空间设置->基本设置->域名设置"查看获取
-//
-//         // uploader 为一个plupload对象，继承了所有plupload的方法，参考http://plupload.com/docs
-//
-//
-//         function getTokenMessage() {
-//             var token = {};
-//             $.ajax({
-//                 url:your serverUrl
-//                 async:false,
-//                 success:function (data) {
-//                 var obj = JSON.parse(data);
-//                 token.token = obj.uploadToken;
-//                 token.filename = obj.filename;
-//
-//             }
-//         })
-//             return token;
-//         }
-//         document.getElementById('uploadfiles').onclick = function() {
-//             uploader.start();
-//         };
-
-
-    </script>
-
-
+    });
+</script>
 </body>
 </html>

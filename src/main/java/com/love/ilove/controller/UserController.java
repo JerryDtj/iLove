@@ -6,6 +6,7 @@ import com.love.ilove.service.UserService;
 import com.love.ilove.utils.ServerResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -23,12 +24,15 @@ public class UserController {
     UserService userService;
     @Autowired
     private UserRoleService userRoleService;
+    @Autowired
+    private RedisTemplate redisTemplate;
 
 
     @GetMapping
     public String user(@AuthenticationPrincipal Authentication principal, Model model){
         model.addAttribute("username", principal.getName());
         model.addAttribute("userId",((User) principal.getPrincipal()).getId());
+        model.addAttribute("token",redisTemplate.opsForValue().get("token_"+principal.getName()));
         return "user/user";
     }
 

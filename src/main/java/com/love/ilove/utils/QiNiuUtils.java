@@ -14,9 +14,12 @@ import com.qiniu.storage.model.FileInfo;
 import com.qiniu.util.Auth;
 import com.qiniu.util.StringMap;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.Assert;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -33,17 +36,28 @@ public class QiNiuUtils {
 
     public static void main(String[] args) throws Exception {
 
-//        System.out.println(getToken("lovephoto",null));
+
+
+//        System.out.println(getToken("ilove",null));
+
+        List<String> s= getSecretDolandLoadUrl("ilove","1-","@photo750");
+        List<String> s1= getSecretDolandLoadUrl("ilove","1-",null);
+        s.forEach(System.out::println);
+        System.out.println("");
+        s1.forEach(System.out::println);
+//        boolean result = delete("ilove","1-fadfdsf");
+
+//        getDomain("ilove");
 //
 //        System.out.println(getPrivateDownloadUrl("http://img.tianzijiaozi.top/816b1407-6778-4fc5-8b05-f04e23f82b40.png"));
 
-        File file = new File("/Users/dengtianjiao/Downloads/images/1.jpg");
+//        File file = new File("/Users/dengtianjiao/Downloads/images/1.jpg");
 
         String bucketNm = "lovephoto";
 
 
         //通过文件来传递
-      upload(bucketNm,file);
+//      upload(bucketNm,file);
 
         //通过文件流来上传文件
         //InputStream in = new FileInputStream(file);
@@ -67,35 +81,76 @@ public class QiNiuUtils {
      * @param bucketNm
      * @param prefix 以什么开头的文件
      */
-    public static void getFileInfo(String bucketNm,String prefix) {
+    public static BucketManager.FileListIterator getFileInfo(String bucketNm, String prefix) {
+        BucketManager.FileListIterator fileListIterator = null;
         try {
             BucketManager bucketManager = getBucketManager();
 
-            //文件名前缀
-//            String prefix = "1-";
             //每次迭代的长度限制，最大1000，推荐值 1000
             int limit = 1000;
             //指定目录分隔符，列出所有公共前缀（模拟列出目录效果）。缺省值为空字符串
             String delimiter = "";
 
             //列举空间文件列表
-            BucketManager.FileListIterator fileListIterator = bucketManager.createFileListIterator(bucketNm, prefix, limit, delimiter);
-            while (fileListIterator.hasNext()) {
-                //处理获取的file list结果
-                FileInfo[] items = fileListIterator.next();
-                for (FileInfo item : items) {
-                    System.out.print(" key= "+item.key);
-                    System.out.print(" hash= "+item.hash);
-                    System.out.print(" size= "+item.fsize);
-                    System.out.print(" mimeType="+item.mimeType);
-                    System.out.print(" putTime= "+item.putTime);
-                    System.out.print(" endUser= "+item.endUser);
-                    System.out.println(" ");
-                }
-            }
+            fileListIterator = bucketManager.createFileListIterator(bucketNm, prefix, limit, delimiter);
+
+//            while (fileListIterator.hasNext()) {
+//                //处理获取的file list结果
+//                FileInfo[] items = fileListIterator.next();
+//                for (FileInfo item : items) {
+//                    System.out.print(" key= "+item.key);
+//                    System.out.print(" hash= "+item.hash);
+//                    System.out.print(" size= "+item.fsize);
+//                    System.out.print(" mimeType="+item.mimeType);
+//                    System.out.print(" putTime= "+item.putTime);
+//                    System.out.print(" endUser= "+item.endUser);
+//                    System.out.println(" ");
+//                }
+//            }
         }catch (Exception e) {
             e.printStackTrace();
         }
+        return fileListIterator;
+    }
+
+    /**
+     * 获取制定空间下绑定的域名，不带http/https
+     * @param bucketName
+     * @return
+     * @throws QiniuException
+     */
+    public static String getDomain(String bucketName) throws QiniuException {
+        BucketManager bucketManager = getBucketManager();
+        String[] s = bucketManager.domainList(bucketName);
+        Assert.notNull(s,bucketName+"获取不到域名");
+        return s[0];
+    }
+
+    /**
+     * 根据前缀和空间名称获取私密下载链接
+     * @param bucketNm
+     * @param prefix
+     * @return
+     * @throws QiniuException
+     */
+    public static List<String> getSecretDolandLoadUrl(String bucketNm, String prefix,String picFomart) throws QiniuException {
+        if (StringUtils.isBlank(picFomart)){
+            picFomart="";
+        }
+        String domain = getDomain(bucketNm);
+        String url = String.format("http://%s/",domain);
+        BucketManager.FileListIterator fileListIterator = getFileInfo(bucketNm, prefix);
+        List<String> urlList = new ArrayList<>();
+        while (fileListIterator.hasNext()){
+            FileInfo[] fileInfos = fileListIterator.next();
+            for (FileInfo info:fileInfos){
+                String publicUrl = url+info.key+picFomart;
+                String securiteUrl = getPrivateDownloadUrl(publicUrl);
+                urlList.add(securiteUrl);
+            }
+
+        }
+        return urlList;
     }
 
     /**
@@ -120,12 +175,12 @@ public class QiNiuUtils {
      * //单次批量请求的文件数量不得超过1000 , 这个是七牛所规定的
      * @return
      */
-    public static Result deletes(String bucketNm ,String [] keys) {
-        Result result = null;
+    public static boolean deletes(String bucketNm ,String [] keys) {
+        boolean result = false;
         try {
             //当文件大于1000的时候，就直接不处理
             if(keys.length >1000) {
-                return new Result(false);
+                return result;
             }
 
             //设定删除的数据
@@ -145,12 +200,12 @@ public class QiNiuUtils {
                     System.out.println("delete success");
                 } else {
                     System.out.println(status.data.error);
-                    return new Result(false);
+                    return result;
                 }
             }
-            result = new Result(true);
+            result = true;
         }catch (Exception e) {
-            result = new Result(false);
+            e.printStackTrace();
         }
         return result;
     }
@@ -160,14 +215,14 @@ public class QiNiuUtils {
      * @param key 文件名称
      * @return
      */
-    public static Result delete(String bucketNm ,String key) {
-        Result result = null;
+    public static Boolean delete(String bucketNm ,String key) {
+         boolean result = false;
         try {
             BucketManager mg = getBucketManager();
             mg.delete(bucketNm, key);
-            result = new Result(true);
+            result = true;
         }catch (Exception e) {
-            result = new Result(false);
+            e.printStackTrace();
         }
         return result;
     }
@@ -178,8 +233,8 @@ public class QiNiuUtils {
      * @param in        输入流
      * @return
      */
-    public static Result upload(String bucketNm, InputStream in, String key) {
-        Result result = null;
+    public static boolean upload(String bucketNm, InputStream in, String key) {
+        boolean result = false;
         try {
             UploadManager uploadManager = getUploadManager(bucketNm);
 
@@ -193,10 +248,11 @@ public class QiNiuUtils {
             DefaultPutRet putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
             System.out.println(putRet.key);
             System.out.println(putRet.hash);
-
-            result = new Result(true,putRet.key);
+            result = true;
+//            result = new Result(true,putRet.key);
         }catch (Exception e) {
-            result = new Result(false);
+            e.printStackTrace();
+//            result = new Result(false);
         }
         return result;
     }
@@ -204,26 +260,27 @@ public class QiNiuUtils {
      * 通过文件来传递数据
      * @param bucketNm
      * @param file
+     * @param prefix
      * @return
      */
-    public static Result upload(String bucketNm,File file) {
-        Result result = null;
+    public static boolean upload(String bucketNm,File file,String prefix) {
+        boolean result = false;
         try {
 
             UploadManager uploadManager = getUploadManager(bucketNm);
 
-            String token = getTokenImg(bucketNm,"1");
-            Response response = uploadManager.put(file.getAbsolutePath(),"1", token);
+            String token = getImgToken(bucketNm,prefix);
+            Response response = uploadManager.put(file.getAbsolutePath(),prefix+file.getName(), token);
 
             //解析上传成功的结果
             DefaultPutRet putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
             System.out.println(putRet.key);
             System.out.println(putRet.hash);
-
-            result = new Result(true,putRet.key);
+            result = true;
+//            result = new Result(true,putRet.key);
         } catch (QiniuException e) {
             e.printStackTrace();
-            result = new Result(false);
+//            result = new Result(false);
         }
         return result;
 
@@ -312,7 +369,7 @@ public class QiNiuUtils {
      * @param key
      * @return
      */
-    public static String getTokenImg(String bucketNm,String key) {
+    public static String getImgToken(String bucketNm,String key) {
         Auth auth = Auth.create(accessKey, secretKey);
         StringMap putPolicy = new StringMap();
         try {
@@ -325,31 +382,4 @@ public class QiNiuUtils {
 //        return auth.uploadToken(bucketNm,key);
     }
 
-    static class Result{
-        private String url;
-        private boolean error;
-
-        public Result(boolean error) {
-            super();
-            this.error = error;
-        }
-
-        public Result( boolean error,String url) {
-            super();
-            this.url = url;
-            this.error = error;
-        }
-        public String getUrl() {
-            return url;
-        }
-        public void setUrl(String url) {
-            this.url = url;
-        }
-        public boolean isError() {
-            return error;
-        }
-        public void setError(boolean error) {
-            this.error = error;
-        }
-    }
 }
