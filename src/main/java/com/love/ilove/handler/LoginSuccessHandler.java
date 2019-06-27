@@ -50,7 +50,7 @@ public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessH
         String token = jwtTokenUtils.createToken(user);
 
         redisTemplate.opsForValue().set("token_"+user.getUsername(),token,expiration, TimeUnit.SECONDS);
-        response.setHeader(tokenHeader, token);
+//        response.setHeader(tokenHeader, token);
 
         log.debug("token:{}",token);
         //登录成功跳转页面

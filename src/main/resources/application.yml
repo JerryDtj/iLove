@@ -1,9 +1,9 @@
 server:
-  port: 8080
+  port: 7890
 
 spring:
   profiles:
-    active: sc
+    active: dev
 
   #jdbc
   datasource:

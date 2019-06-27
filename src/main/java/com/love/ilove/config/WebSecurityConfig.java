@@ -45,8 +45,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/swagger-ui.html","/webjars/**","/v2/**","/swagger-resources/**").permitAll()
                 //测试环境，不过滤任何请求
 //                .antMatchers("/user/**").hasRole("USERINFO")
-                //所有请求都要被鉴权
-//                .anyRequest().authenticated()
+//                所有请求都要被鉴权
+                .anyRequest().authenticated()
                 .and()
                 .exceptionHandling()
                 .accessDeniedHandler(new GoAccessDeniedHandler())

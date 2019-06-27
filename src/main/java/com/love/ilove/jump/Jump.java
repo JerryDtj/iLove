@@ -19,6 +19,11 @@ public class Jump {
         return "register";
     }
 
+    @GetMapping("/photos")
+    public String photos(){
+        return "user/photos";
+    }
+
     @GetMapping({"/", "/index", "/home"})
     public String root(){
         return "index";
