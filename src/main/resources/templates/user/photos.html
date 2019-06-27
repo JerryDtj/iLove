@@ -3,42 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link rel="stylesheet" href="../css/user/blueimp-gallery.min.css">
+    <link rel="stylesheet" href="../css/blueimp-gallery.min.css">
 </head>
 <body>
 <div th:replace="~{header :: nav}"></div>
+<div class="container" style="margin-top: 60px">
+    <div id="blueimp-gallery" class="blueimp-gallery">
+        <div class="slides"></div>
+        <h3 class="title"></h3>
+        <a class="prev">‹</a>
+        <a class="next">›</a>
+        <a class="close">×</a>
+        <a class="play-pause"></a>
+        <ol class="indicator"></ol>
+    </div>
+    <div id="addPic">
+        <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#uploadpic">
+            上传照片
+        </button>
+        <!-- 模态框（Modal）上传照片 -->
+        <div class="modal fade" id="uploadpic" tabindex="-1" role="dialog" aria-labelledby="uploadPicTitle" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"aria-hidden="true">×</button>
+                        <h4 class="modal-title" id="uploadPicTitle">
+                            添加照片
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <div id="box2" styple="margin-left:20px;">
+                            <input type="file" id="fileInput" name="file" multiple="multiple" accept="image/*">
+                            <button id="btn_start_upload">开始上传</button>
+                            <button id="btn_clear_upload">清空上传列表</button>
+                        </div>
+                        <div id="progress_area" style="height: 220px;width:960px;border:1px solid black; overflow:auto;">
+                            <!-- <div style="text-align:left;margin-left: 20px;">
+                                <label id="file_name"></label>
+                                <label style="">上传进度：</label>
+                                <progress style="" max="100" value="0" id="pg"></progress>
+                                <label id="progress_value">0%</label>
+                                <label>图片地址：</label>
+                                <label id="file_url"></label>
+                            </div> -->
 
-<div id="blueimp-gallery" class="blueimp-gallery">
-    <div class="slides"></div>
-    <h3 class="title"></h3>
-    <a class="prev">‹</a>
-    <a class="next">›</a>
-    <a class="close">×</a>
-    <a class="play-pause"></a>
-    <ol class="indicator"></ol>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="button" onclick="uploadPic()" class="btn btn-primary">提交更改</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+    </div><!--/.addpic -->
+    <div id = "links">
+<!--        <a href="http://img.tianzijiaozi.top/1-o_1ddemi41f1oadlnb1q5l1smq9ldf?e=1560667744&token=xP26v6i5ZX5ricklajjShhW9Jjc20X-PKc9X9MOW:u3VmWzTFh3h3LBtsNTcyyYkClCQ=" title="Banana">-->
+<!--            <img src="http://img.tianzijiaozi.top/1-o_1ddemi41f1oadlnb1q5l1smq9ldf@photo750?e=1560667744&token=xP26v6i5ZX5ricklajjShhW9Jjc20X-PKc9X9MOW:_7DJ5J4MfjdID2Aq86VXmq8MQRg=" alt="Banana">-->
+<!--        </a>-->
+    </div>
+
 </div>
-<div id="links">
-    <a th:each="url:${picUrl}" th:href="${url.big}" title="Banana">
-        <!-- <a href="img/error.png" title="Banana"> -->
-        <img th:src="${url.small}" alt="Banana">
-    </a>
 
 
-    <a href="http://img.tianzijiaozi.top/1-o_1ddemi41f1oadlnb1q5l1smq9ldf?e=1560667744&token=xP26v6i5ZX5ricklajjShhW9Jjc20X-PKc9X9MOW:u3VmWzTFh3h3LBtsNTcyyYkClCQ=" title="Banana">
-        <!-- <a href="img/error.png" title="Banana"> -->
-        <img src="http://img.tianzijiaozi.top/1-o_1ddemi41f1oadlnb1q5l1smq9ldf@photo750?e=1560667744&token=xP26v6i5ZX5ricklajjShhW9Jjc20X-PKc9X9MOW:_7DJ5J4MfjdID2Aq86VXmq8MQRg=" alt="Banana">
-    </a>
-    <a href="http://img.tianzijiaozi.top/1-o_1ddemi41f18i31nd21hse1a7u11bdd?e=1560667744&token=xP26v6i5ZX5ricklajjShhW9Jjc20X-PKc9X9MOW:tIg1xwSmIu9WtwcmDq7P_hhJ-ZQ=" title="Banana">
-        <!-- <a href="img/error.png" title="Banana"> -->
-        <img src="http://img.tianzijiaozi.top/1-o_1ddemi41f18i31nd21hse1a7u11bdd@photo750?e=1560667744&token=xP26v6i5ZX5ricklajjShhW9Jjc20X-PKc9X9MOW:-laMJ74RBFQPszoGRDWVeI7L52w=" alt="Banana">
-    </a>
-    href="http://img.tianzijiaozi.top/1-o_1ddemi41f1oadlnb1q5l1smq9ldf?e=1560662214&token=xP26v6i5ZX5ricklajjShhW9Jjc20X-PKc9X9MOW:UjZ9cgXDDHu1Jq89Lhe3FSzGtlI="
-</div>
-<!--<script src="../js/user/jquery.blueimp-gallery.min.js"></script>
-<script src="../js/user/blueimp-gallery.min.js"></script>-->
 <script th:inline="javascript">
-    var urls = "";
     $(function(){
+        var param = {"id":getCookie("id") };
+        $.ajax({
+            url:'/qiniu/getPicUrl',
+            type:'put',
+            // contentType: "application/json;charset=UTF-8",
+            data:param,
+            dataType:'json',
+            headers:{
+                "Authorization":token
+            },
+            success:function(result) {
+                if(result.status==0){
+                    for(var i=0;i<result.data.length;i++){
+                        var pic = result.data[i];
+                        $('#links').append('<a href="'+pic.bigPic+'" title="Banana"><img src="'+pic.smallPic+'" alt="Banana"></a>')
+
+                    }
+                }else {
+                    alert(result.msg);
+                }
+            }
+        });
+
         document.getElementById('links').onclick = function (event) {
             event = event || window.event;
             var target = event.target || event.srcElement,
@@ -47,27 +99,15 @@
                 links = this.getElementsByTagName('a');
             blueimp.Gallery(links, options);
         };
-
-        $.ajax({
-            url:'/qiniu/getPicUrl',
-            type:'put',
-            // contentType: "application/json;charset=UTF-8",
-            dataType:'json',
-            headers:{
-                "Authorization":token
-            },
-            success:function(result) {
-                if(result.status==0){
-                    console.info(result.data);
-                    // $('#links').addChild
-                }else {
-                    alert(result.msg)
-                }
-            }
-        });
     });
-    var userId = [[${userId}]];
-    console.log("userId:"+userId);
+
+    function uploadPic(){
+
+    }
+
+
 </script>
+<script src="../js/jquery.blueimp-gallery.min.js"></script>
+<script src="../js/blueimp-gallery.min.js"></script>
 </body>
 </html>

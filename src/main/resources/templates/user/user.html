@@ -62,7 +62,7 @@
                     <label class="col-sm-2 control-label">email 地址</label>
                     <div class="col-sm-10">
                         <span id="emailValue"></span>
-                        <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#bandingEmail">
+                        <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#bandingEmail">
                             绑定邮箱
                         </button>
                     </div>
@@ -170,10 +170,9 @@
 
 <script type="text/javascript" th:inline="javascript">
     /*<![CDATA[*/
+    var id = [[${userId}]];
+
     $(function () {
-
-
-
 
         $(".userDropdown").mouseover(function () {
             $(this).addClass("open");
@@ -182,10 +181,17 @@
             $(this).removeClass("open");
         });
 
+        if (id!=null) {
+            setCookie("id",id);
+        }else {
+            id = getCookie("id");
+        }
+
         getUserInfo();
 
 
     });
+    console.info("id:"+id);
     var isChecked = false;
     function check(){
         return true;
@@ -193,7 +199,7 @@
 
     function getUserInfo(){
         // var param=[];
-        var data = {"userId":[[${userId}]]};
+        var data = {"userId":id};
         $.ajax({
             url:[[@{/userInfo}]],
             type:"get",
@@ -253,7 +259,7 @@
     $("#emailCode").blur(function(){
         var emailCode = $("#emailCode").val();
         if (emailCode!=null&&emailCode!=undefined&&emailCode!=''){
-            var param = {"emailCode":$("#emailCode").val(),"userId":[[${userId}]] };
+            var param = {"emailCode":$("#emailCode").val(),"userId":id };
             $.ajax({
                 url:'/userInfo/emailCheck',
                 type:"GET",
@@ -271,7 +277,7 @@
     });
 
     function emailSend(){
-        var param = {"email":$("#email").val(),"id":[[${userId}]],"nickName":[[${username}]]};
+        var param = {"email":$("#email").val(),"id":id,"nickName":[[${username}]]};
         $.ajax({
             url:'/userInfo/emailSend',
             type:"GET",
@@ -289,7 +295,7 @@
     }
 
     function saveorupdateEmail(){
-        var param = {"email":$("#email").val(),"id":[[${userId}]],"nickName":[[${username}]] };
+        var param = {"email":$("#email").val(),"id":id,"nickName":[[${username}]] };
         $.ajax({
             url:'/userInfo/saveOrUpdateEmail',
             type:"post",
@@ -312,7 +318,7 @@
     function changePwd() {
         if (check()==true){
             // var param = {"_method":"put","id":$("#id").val(),"password":$("#newpwd").val(),"username":$("#id").val(),"oldPwd":$("#pwd").val()};
-            var param = {"id":[[${userId}]],"password":$("#newpwd").val(),"username":[[${username}]],"oldPwd":$("#pwd").val()};
+            var param = {"id":id,"password":$("#newpwd").val(),"username":[[${username}]],"oldPwd":$("#pwd").val()};
             $.ajax({
                 url:[[@{/user/pwd}]],
                 type:"put",
@@ -334,7 +340,7 @@
     function userInfo() {
         // var param=[];
         var data = {};
-        data["id"]= [[${userId}]];
+        data["id"]= id;
         if ($("#emailValue").text()!=""){
             data["email"] = $("#emailValue").text();
         }

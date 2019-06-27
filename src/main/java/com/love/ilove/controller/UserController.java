@@ -31,10 +31,16 @@ public class UserController {
     @GetMapping
     public String user(@AuthenticationPrincipal Authentication principal, Model model){
         model.addAttribute("username", principal.getName());
-        model.addAttribute("userId",((User) principal.getPrincipal()).getId());
+        Object p = principal.getPrincipal();
+        if (p instanceof User){
+            model.addAttribute("userId",((User)p).getId());
+        }else if (p instanceof String){
+            model.addAttribute("userId",Integer.valueOf(principal.getPrincipal().toString()));
+        }
         model.addAttribute("token",redisTemplate.opsForValue().get("token_"+principal.getName()));
         return "user/user";
     }
+
 
     @PutMapping("/pwd")
     @ResponseBody
