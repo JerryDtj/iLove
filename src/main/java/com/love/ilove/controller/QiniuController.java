@@ -7,10 +7,7 @@ import com.qiniu.common.QiniuException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,10 +26,19 @@ public class QiniuController {
     private String secretBucketName = "ilove";
     private String BucketUrl = "http://psk85spi5.bkt.clouddn.com/";
 
-    @GetMapping("/token")
-    public ServerResponse getToken(@AuthenticationPrincipal Authentication principal){
+    @GetMapping("/avatar")
+    public ServerResponse getAvatar(@AuthenticationPrincipal Authentication principal){
         try {
-            String userId = ((User) principal.getPrincipal()).getId().toString();
+            String userId;
+            Object p = principal.getPrincipal();
+            if (p instanceof User){
+                userId = ((User)p).getId().toString();
+            }else if (p instanceof String){
+                userId = principal.getPrincipal().toString();
+            }else {
+                throw new RuntimeException("获取userId出错");
+            }
+
             String token = QiNiuUtils.getImgToken(publicBucketName,userId);
             String bucketUrl = String.format("http://%s/",QiNiuUtils.getDomain(publicBucketName));
             String url = bucketUrl+userId;
@@ -44,6 +50,21 @@ public class QiniuController {
             log.error("",e);
             return ServerResponse.createByErrorMessage(e.getMessage());
         }
+    }
+
+    @GetMapping("/token")
+    public ServerResponse getToken(@RequestParam String bucketName){
+        switch (bucketName){
+            case "pub":
+                bucketName = publicBucketName;
+                break;
+            case "sec":
+                bucketName = secretBucketName;
+                break;
+            default:
+                return ServerResponse.createByErrorMessage("存储名称有误");
+        }
+        return ServerResponse.createBySuccess(QiNiuUtils.getImgToken(bucketName,null));
     }
 
     @PutMapping("/getPicUrl")

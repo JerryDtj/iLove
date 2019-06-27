@@ -392,8 +392,8 @@
         //七牛云上传
         $.ajax({
             type:'get',
-            url: "/qiniu/token",
-            // data:{"suffix":suffix},
+            url: "/qiniu/avatar",
+            data:{"bucketName":'pub'},
             // dataType:'json',
             success: function(result){
                 if(result.status == 0){
