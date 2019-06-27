@@ -1,5 +1,10 @@
 # iLove
 
+喜欢的可以点下星星。强烈求星星.watch和fork就不必了。因为项目还在开发中。所以叉了意义也不大。
+ - 添加2个使用账户 可以试用下系统.也可以自己注册,体验下功能
+ - accout:2 pwd:2
+ - accout:3 pwd:3
+
 ## 项目地址
 
   https://tianzijiaozi.top
@@ -13,7 +18,9 @@
 一个基于gradle的婚恋网站. 
   - 下载运行需要先集成gradle
   - gradle下载安装请参考官网 https://gradle.org/install/
-
+  - 所有的新功能/问题我都会先发布一个isuess出来,然后在master分支上建立出对应isuess的功能.完成后会把对应的isuess合并到master
+  - 所有的部署全部依靠jekins自动部署,di工具暂时还没有.
+  
 ## 技术栈
   - Spring Security
   - Spring Security OAuth2
