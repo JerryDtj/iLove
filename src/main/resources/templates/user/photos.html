@@ -48,6 +48,150 @@
                             </div> -->
 
                         </div>
+
+                        <script type="application/javascript">
+                            var token = '';
+                            $.get("/api/qiniu/getToken", function (data, status) { //这里的token需要自己写一个接口动态生成，因为安全考虑而且token是有效期的
+                                console.log(JSON.stringify(data));
+                                token = data.uptoken;
+                                console.log(token);
+                            });
+
+
+                            var fileInput = document.querySelector("#fileInput");
+                            var isFilesChanged = false;
+                            fileInput.addEventListener("change", function (event) {
+                                isFilesChanged = true;
+                                console.log('fileInput.addEventListener');
+                            }, false);
+
+                            $('#btn_start_upload').click(function () {
+                                if (isFilesChanged) {
+                                    uploadMutileFile(fileInput);
+                                    isFilesChanged = false; //防止重复点击，上传重复图片
+                                }
+                            });
+                            $('#btn_clear_upload').click(function () {
+                                document.getElementById("progress_area").innerHTML = "";
+                            });
+
+                            function uploadMutileFile(files) {
+                                for (let i = 0; i < fileInput.files.length; i++) {
+                                    var file = fileInput.files[i];
+                                    // name: 文件名.
+                                    // lastModified: UNIX timestamp 形式的最后修改时间.
+                                    // lastModifiedDate:  Date 形式的最后修改时间.
+                                    // size: 文件的字节大小.
+                                    // type: DOMString 文件的 MIME 类型.
+                                    console.log('name = ' + file.name + ' lastModified = ' +
+                                        ' lastModifiedDate = ' + file.lastModifiedDate +
+                                        ' size = ' + file.size +
+                                        ' type = ' + file.type + '\n');
+                                    //在for循环中增加元素
+                                    // <div style="text-align:left;margin-left: 20px;">
+                                    //     <label id="file_name"></label>
+                                    //     <label style="">上传进度：</label>
+                                    //     <progress style="" max="100" value="0" id="pg"></progress>
+                                    //     <label id="progress_value">0%</label>
+                                    //     <label>图片地址：</label>
+                                    //     <label id="file_url"></label>
+                                    // </div>
+                                    var parent = document.getElementById('progress_area');
+                                    var divChild = document.createElement('div');
+                                    var labelFileName = document.createElement('label');
+                                    var labelUploadProgress = document.createElement('label');
+                                    var progress = document.createElement('progress');
+                                    progress.setAttribute('max', 100);
+                                    progress.setAttribute('value', 0);
+                                    var progressValue = document.createElement('label');
+                                    var resultLabel = document.createElement('label');
+
+                                    divChild.appendChild(labelFileName);
+                                    divChild.appendChild(labelUploadProgress);
+                                    divChild.appendChild(progress);
+                                    divChild.appendChild(progressValue);
+                                    divChild.appendChild(resultLabel);
+                                    parent.appendChild(divChild);
+
+
+                                    labelFileName.innerText = file.name;
+                                    labelUploadProgress.innerText = '上传进度：';
+                                    //设置相关的css布局
+                                    labelFileName.style.width = '50px';
+                                    labelFileName.style.textOverflow = 'ellipsis';
+                                    labelFileName.style.overflow = 'hidden';
+                                    labelFileName.style.whiteSpace = 'nowrap';
+
+                                    labelUploadProgress.style.marginLeft = '8px';
+
+                                    progress.style.marginLeft = '8px';
+                                    resultLabel.style.marginLeft = '20px';
+
+                                    uploadFile(file, progress, progressValue, resultLabel);
+                                }
+                            }
+
+
+                            function getModifiedName(file) {
+                                var fileName = '';
+                                var currentDate = new Date();
+                                fileName = 'test/' +
+                                    currentDate.getFullYear() + '_' +
+                                    currentDate.getMonth() + 1 + '_' +
+                                    currentDate.getDate() + '_' +
+                                    currentDate.getHours() + '_' +
+                                    currentDate.getMinutes() + '_' +
+                                    currentDate.getSeconds() + '_' +
+                                    currentDate.getMilliseconds() + '_' +
+                                    file.name;
+                                return fileName;
+                            }
+
+                            function uploadFile(file, progress, progressValue, resultLabel) {
+                                var key = getModifiedName(file);
+                                var config = {
+                                    useCdnDomain: true,
+                                };
+                                var putExtra = {
+                                    fname: "",
+                                    params: {},
+                                    mimeType: [] || null
+                                };
+                                var observable = qiniu.upload(file, key, token, putExtra, config);
+                                // observer: observer 为一个 object，
+                                // 用来设置上传过程的监听函数，有三个属性 next、error、complete:
+                                var observer = {
+                                    next(res) {
+                                        console.log('in observer next:')
+                                        // var pg = document.getElementById('pg');
+                                        // var labelProgress = document.getElementById('progress_value');
+                                        // var fileName = document.getElementById('file_name');
+                                        progress.value = res.total.percent;
+                                        progressValue.innerText = res.total.percent.toFixed(0) + '%';
+                                        console.log(res.total.loaded + '====>' + res.total.total + '====>' + res.total.percent);
+                                    },
+                                    error(err) {
+                                        console.log('in observer error:')
+                                        console.log(JSON.stringify(err));
+                                        resultLabel.innerText = '上传失败';
+                                    },
+                                    complete(res) {
+                                        console.log('in observer complete:')
+                                        console.log(JSON.stringify(res));
+                                        // var resultLabel = document.getElementById('file_url');
+                                        // resultLabel.innerText = '' + res.key; //加上自己在七牛配置的domian则可以获得上传后七牛空间的url地址了
+                                        resultLabel.innerText = '上传成功';
+                                        console.log('res.key = ' + res.key);
+                                    }
+                                }
+                                var subscription = observable.subscribe(observer) // 上传开始
+                                // or
+                                // var subscription = observable.subscribe(next, error, complete) // 这样传参形式也可以
+
+                                // subscription.unsubscribe() // 上传取消
+                            }
+                        </script>
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
