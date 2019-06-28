@@ -42,7 +42,6 @@ public class QiNiuUtils {
         BucketManager.FileListIterator fileListIterator = null;
         try {
             BucketManager bucketManager = getBucketManager();
-
             //每次迭代的长度限制，最大1000，推荐值 1000
             int limit = 1000;
             //指定目录分隔符，列出所有公共前缀（模拟列出目录效果）。缺省值为空字符串
