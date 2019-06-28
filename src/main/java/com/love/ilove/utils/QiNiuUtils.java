@@ -27,54 +27,11 @@ import java.util.UUID;
  * @Date 2019-06-04 08:01
  */
 public class QiNiuUtils {
-    //官网地址
-    //https://developer.qiniu.com/kodo/sdk/1239/java
     private static final String accessKey = "xP26v6i5ZX5ricklajjShhW9Jjc20X-PKc9X9MOW";
     private static final  String secretKey = "YfDr4HEk9cgtjscKa7BgIbGvU6u5W79kNhJPVi0A";
     private static final  String agreeImgType = "image/*";
     private static final  String imgMaxType = "5242880";
 
-    public static void main(String[] args) throws Exception {
-
-
-
-//        System.out.println(getToken("ilove",null));
-
-        List<String> s= getSecretDolandLoadUrl("ilove","1-","@photo750");
-        List<String> s1= getSecretDolandLoadUrl("ilove","1-",null);
-        s.forEach(System.out::println);
-        System.out.println("");
-        s1.forEach(System.out::println);
-//        boolean result = delete("ilove","1-fadfdsf");
-
-//        getDomain("ilove");
-//
-//        System.out.println(getPrivateDownloadUrl("http://img.tianzijiaozi.top/816b1407-6778-4fc5-8b05-f04e23f82b40.png"));
-
-//        File file = new File("/Users/dengtianjiao/Downloads/images/1.jpg");
-
-        String bucketNm = "lovephoto";
-
-
-        //通过文件来传递
-//      upload(bucketNm,file);
-
-        //通过文件流来上传文件
-        //InputStream in = new FileInputStream(file);
-        //upload(bucketNm,in,"fdafaf.gif");
-
-        //删除bucket
-//      delete(bucketNm, "fdafaf.gif");
-
-        //获取文件信息
-        //String [] files = {"Fg2KGXu0vLjTQhGuOZhWIxWgVhy4"};
-        //deletes(bucketNm,files);
-
-        //获取文件信息
-//        getBucketsInfo();
-
-//        getFileInfo(bucketNm,"1");
-    }
 
     /**
      * 获取bucket里面所有文件的信息
@@ -94,19 +51,6 @@ public class QiNiuUtils {
             //列举空间文件列表
             fileListIterator = bucketManager.createFileListIterator(bucketNm, prefix, limit, delimiter);
 
-//            while (fileListIterator.hasNext()) {
-//                //处理获取的file list结果
-//                FileInfo[] items = fileListIterator.next();
-//                for (FileInfo item : items) {
-//                    System.out.print(" key= "+item.key);
-//                    System.out.print(" hash= "+item.hash);
-//                    System.out.print(" size= "+item.fsize);
-//                    System.out.print(" mimeType="+item.mimeType);
-//                    System.out.print(" putTime= "+item.putTime);
-//                    System.out.print(" endUser= "+item.endUser);
-//                    System.out.println(" ");
-//                }
-//            }
         }catch (Exception e) {
             e.printStackTrace();
         }
@@ -379,7 +323,6 @@ public class QiNiuUtils {
             e.printStackTrace();
         }
         return auth.uploadToken(bucketNm,key,3600,putPolicy);
-//        return auth.uploadToken(bucketNm,key);
     }
 
 }
